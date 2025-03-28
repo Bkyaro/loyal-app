@@ -1,25 +1,21 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "b32f5aabcf5f65e751d4049d4da00a2f"
-application_url = "https://kde-ron-october-speech.trycloudflare.com"
+application_url = "https://kind-only-newt.ngrok-free.app"
 embedded = true
 name = "loyalol"
 handle = "loyalol"
-
-[build]
-include_config_on_deploy = true
-automatically_update_urls_on_dev = true
 
 [webhooks]
 api_version = "2025-01"
 
   [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
-
-  [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]
   uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -27,10 +23,14 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://kde-ron-october-speech.trycloudflare.com/auth/callback",
-  "https://kde-ron-october-speech.trycloudflare.com/auth/shopify/callback",
-  "https://kde-ron-october-speech.trycloudflare.com/api/auth/callback"
+  "https://kind-only-newt.ngrok-free.app/auth/callback",
+  "https://kind-only-newt.ngrok-free.app/auth/shopify/callback",
+  "https://kind-only-newt.ngrok-free.app/api/auth/callback"
 ]
 
 [pos]
 embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
