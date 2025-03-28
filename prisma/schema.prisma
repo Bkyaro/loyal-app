@@ -30,3 +30,68 @@ model Session {
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
 }
+
+// 店铺设置
+model ShopSettings {
+  id                String   @id @default(uuid())
+  shop              String   @unique
+  pointsEnabled     Boolean  @default(true)
+  pointsName        String   @default("Points")
+  pointsToMoney     Float    @default(100) // 兑换比例：多少积分兑换1元
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// 客户数据
+model Customer {
+  id                String         @id
+  shop              String
+  email             String
+  firstName         String?
+  lastName          String?
+  pointsBalance     Int            @default(0)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  pointsHistories   PointHistory[]
+
+  @@unique([shop, id])
+  @@index([shop, email])
+}
+
+// 积分规则
+model PointRule {
+  id                String    @id @default(uuid())
+  shop              String
+  name              String
+  description       String?
+  type              String    // PURCHASE, SIGNUP, REFERRAL, BIRTHDAY, REVIEW, SOCIAL_SHARE
+  pointsAmount      Int
+  isEnabled         Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // 购物积分规则额外字段
+  purchaseAmount    Float?    // 购物金额
+  
+  // 社交分享额外字段
+  socialPlatform    String?   // FACEBOOK, INSTAGRAM, TWITTER
+
+  @@index([shop, type])
+}
+
+// 积分历史记录
+model PointHistory {
+  id                String    @id @default(uuid())
+  shop              String
+  customerId        String
+  customer          Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  points            Int       // 积分变动数量，可正可负
+  balance           Int       // 变动后余额
+  orderId           String?   // 关联订单ID（如果有）
+  description       String    // 描述
+  type              String    // EARNED, REDEEMED, EXPIRED, ADJUSTED
+  createdAt         DateTime  @default(now())
+
+  @@index([shop, customerId])
+  @@index([shop, orderId])
+}
