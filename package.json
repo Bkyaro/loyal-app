@@ -4,6 +4,8 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "shopify app dev",
+    "ngrok": "ngrok http --url=kind-only-newt.ngrok-free.app 3000",
+    "fastdev": "shopify app dev --tunnel-url=https://kind-only-newt.ngrok-free.app:3000",
     "config:link": "shopify app config link",
     "generate": "shopify app generate",
     "deploy": "shopify app deploy",
