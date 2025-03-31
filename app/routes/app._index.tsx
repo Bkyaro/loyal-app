@@ -86,7 +86,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   );
 
   const variantResponseJson = await variantResponse.json();
-
+  
   return {
     product: responseJson!.data!.productCreate!.product,
     variant:
@@ -132,7 +132,7 @@ export default function Index() {
   return (
     <Page fullWidth>
       <Layout>
-        <h1 className="text-3xl font-bold underline">tw test</h1>
+        <h1 className="underline border-2 border-red-500">tw test</h1>
         <div style={{ width: "50px", height: "50px", border: "2px solid red" }}> TEST </div>
         <Box paddingBlockStart="400" paddingBlockEnd="600" width="80%">
           <Card>
