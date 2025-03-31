@@ -153,7 +153,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
   // useLoaderData 获取 loader 返回的数据
-  const { products, shop } = useLoaderData<{ products: Product[]; shop: string }>();
+  const { products, shop } = useLoaderData<{
+    products: Product[];
+    shop: string;
+  }>();
 
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
@@ -190,6 +193,14 @@ export default function Index() {
       shopify.toast.show("Product created");
     }
   }, [productId, shopify]);
+
+  // useEffect(() => {
+  //   const response = shopify.scopes
+  //     .request(["read_discounts"])
+  //     .then((res) => {
+  //       console.log("response", res);
+  //     });
+  // }, [shopify]);
 
   const generateProduct = () => fetcher.submit({}, { method: "POST" });
 
@@ -245,7 +256,10 @@ export default function Index() {
                   emptyStateContent
                 ) : (
                   <ResourceList
-                    resourceName={{ singular: "产品", plural: "产品" }}
+                    resourceName={{
+                      singular: "产品",
+                      plural: "产品",
+                    }}
                     items={filteredProducts}
                     renderItem={(product) => {
                       const {
@@ -285,7 +299,10 @@ export default function Index() {
                             </div>
                             <div>{description}</div>
                             <div>价格: {price}</div>
-                            <Link url={`https://${shop}/admin/products/${productId}`} target="_blank">
+                            <Link
+                              url={`https://${shop}/admin/products/${productId}`}
+                              target="_blank"
+                            >
                               跳转
                             </Link>
                           </BlockStack>
