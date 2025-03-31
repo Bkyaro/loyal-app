@@ -212,24 +212,24 @@ export default function Index() {
   const searchField = (
     <Autocomplete.TextField
       onChange={handleSearchChange}
-      label=""
+      label=''
       value={searchValue}
-      prefix={<Icon source={SearchIcon} tone="base" />}
-      placeholder="搜索产品名称"
-      autoComplete="off"
+      prefix={<Icon source={SearchIcon} tone='base' />}
+      placeholder='搜索产品名称'
+      autoComplete='off'
     />
   );
 
   // 处理空状态
   const emptyStateContent = (
-    <EmptyState heading="没有找到产品" image="/empty-state.svg">
+    <EmptyState heading='没有找到产品' image='/empty-state.svg'>
       <p>尝试修改搜索条件或创建新产品</p>
     </EmptyState>
   );
 
   return (
     <Page
-      title="产品管理"
+      title='产品管理'
       primaryAction={{
         content: "创建产品",
         onAction: generateProduct,
@@ -239,8 +239,8 @@ export default function Index() {
       <Layout>
         <Layout.Section>
           <Card>
-            <Box padding="400">
-              <BlockStack gap="400">
+            <Box padding='400'>
+              <BlockStack gap='400'>
                 <Autocomplete
                   options={[]}
                   selected={[]}
@@ -249,8 +249,8 @@ export default function Index() {
                 />
 
                 {isLoading ? (
-                  <Box padding="400">
-                    <Spinner size="large" />
+                  <Box padding='400'>
+                    <Spinner size='large' />
                   </Box>
                 ) : filteredProducts.length === 0 ? (
                   emptyStateContent
@@ -292,7 +292,7 @@ export default function Index() {
                             />
                           }
                         >
-                          <BlockStack gap="100">
+                          <BlockStack gap='100'>
                             <div>{title}</div>
                             <div>
                               状态: {status === "ACTIVE" ? "在售" : "下架"}
@@ -301,7 +301,7 @@ export default function Index() {
                             <div>价格: {price}</div>
                             <Link
                               url={`https://${shop}/admin/products/${productId}`}
-                              target="_blank"
+                              target='_blank'
                             >
                               跳转
                             </Link>
