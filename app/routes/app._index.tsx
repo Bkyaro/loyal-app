@@ -18,6 +18,8 @@ import {
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { SearchIcon } from "@shopify/polaris-icons";
+import { Button as CNButton } from "../components/ui/button"
+
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
@@ -132,6 +134,7 @@ export default function Index() {
   return (
     <Page fullWidth>
       <Layout>
+        <CNButton>Button</CNButton>
         <h1 className="underline border-2 border-red-500">tw test</h1>
         <div style={{ width: "50px", height: "50px", border: "2px solid red" }}> TEST </div>
         <Box paddingBlockStart="400" paddingBlockEnd="600" width="80%">
