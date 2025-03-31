@@ -18,13 +18,30 @@ import {
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { SearchIcon } from "@shopify/polaris-icons";
-import { Button as CNButton } from "../components/ui/button"
-
+import { Button as CNButton } from "../components/ui/button";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
+  const { admin } = await authenticate.admin(request);
 
-  return null;
+  const response = await admin.graphql(`
+    {
+      products(first: 25) {
+        nodes {
+          title
+          description
+        }
+      }
+    }`);
+
+  const {
+    data: {
+      products: { nodes },
+    },
+  } = await response.json();
+
+  console.log(nodes);
+
+  return nodes;
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -88,7 +105,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   );
 
   const variantResponseJson = await variantResponse.json();
-  
+
   return {
     product: responseJson!.data!.productCreate!.product,
     variant:
@@ -136,7 +153,10 @@ export default function Index() {
       <Layout>
         <CNButton>Button</CNButton>
         <h1 className="underline border-2 border-red-500">tw test</h1>
-        <div style={{ width: "50px", height: "50px", border: "2px solid red" }}> TEST </div>
+        <div style={{ width: "50px", height: "50px", border: "2px solid red" }}>
+          {" "}
+          TEST{" "}
+        </div>
         <Box paddingBlockStart="400" paddingBlockEnd="600" width="80%">
           <Card>
             <Autocomplete
