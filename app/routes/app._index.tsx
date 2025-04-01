@@ -331,14 +331,6 @@ export default function Index() {
     }
   }, [productId, shopify]);
 
-  // useEffect(() => {
-  //   const response = shopify.scopes
-  //     .request(["read_discounts"])
-  //     .then((res) => {
-  //       console.log("response", res);
-  //     });
-  // }, [shopify]);
-
   // 添加创建产品和折扣的处理函数
   const generateProduct = () => {
     fetcher.submit({ action: "createProduct" }, { method: "POST" });
