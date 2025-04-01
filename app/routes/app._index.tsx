@@ -78,7 +78,40 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     },
   } = await response.json();
 
-  return { products: nodes, shop };
+  // 新增: 获取 Shopify Functions 信息
+  try {
+    const functionsResponse = await admin.graphql(`
+      query {
+        shopifyFunctions(first: 10) {
+          nodes {
+            id
+            app {
+              title
+            }
+            apiType
+            title
+          }
+        }
+      }
+    `);
+
+    const functionsData = await functionsResponse.json();
+
+    // 打印获取到的 Shopify Functions 数据到控制台
+    console.log(
+      "Shopify Functions Data:",
+      JSON.stringify(functionsData, null, 2),
+    );
+
+    return {
+      products: nodes,
+      shop,
+      shopifyFunctions: functionsData.data?.shopifyFunctions?.nodes || [],
+    };
+  } catch (error) {
+    console.error("Error fetching Shopify Functions:", error);
+    return { products: nodes, shop, shopifyFunctions: [] };
+  }
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -152,11 +185,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  // useLoaderData 获取 loader 返回的数据
-  const { products, shop } = useLoaderData<{
+  const { products, shop, shopifyFunctions } = useLoaderData<{
     products: Product[];
     shop: string;
+    shopifyFunctions: any[];
   }>();
+
+  console.log("shopifyFunctions", shopifyFunctions);
+  // output
+  // [
+  //   {
+  //     "id": "0c8bc3db-009e-48f4-93da-xxxxxxxx",
+  //     "app": {
+  //       "title": "loyalol"
+  //     },
+  //     "apiType": "product_discounts",
+  //     "title": "product-discount"
+  //   },
+  //   {
+  //     "id": "426814bd-3d67-40a5-9ef1-xxxxxxxx",
+  //     "app": {
+  //       "title": "loyalol"
+  //     },
+  //     "apiType": "order_discounts",
+  //     "title": "order-discount-function-test"
+  //   }
+  // ]
 
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
@@ -237,6 +291,23 @@ export default function Index() {
       }}
     >
       <Layout>
+        <Layout.Section>
+          <Card>
+            <Box padding='400'>
+              <BlockStack gap='400'>
+                <div>Shopify Functions</div>
+                {shopifyFunctions && shopifyFunctions.length > 0 ? (
+                  <div style={{ overflowX: "auto" }}>
+                    <pre>{JSON.stringify(shopifyFunctions, null, 2)}</pre>
+                  </div>
+                ) : (
+                  <div>No Shopify Functions found</div>
+                )}
+              </BlockStack>
+            </Box>
+          </Card>
+        </Layout.Section>
+
         <Layout.Section>
           <Card>
             <Box padding='400'>
