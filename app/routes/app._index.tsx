@@ -25,6 +25,8 @@ import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { SearchIcon } from "@shopify/polaris-icons";
 import { Button as CNButton } from "../components/ui/button";
+import { getAppPermissions } from "~/services/permission.server";
+import { usePermission } from "~/hooks/usePermission";
 
 // 定义产品类型接口，便于TypeScript类型检查
 interface Product {
@@ -45,9 +47,12 @@ interface Product {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log("requst!", JSON.stringify(request));
+  // console.log("requst!", JSON.stringify(request));
   const { admin, session } = await authenticate.admin(request);
   const shop = session.shop;
+
+  // 查询当前插件权限
+  const permissions = await getAppPermissions(request);
 
   // 扩展GraphQL查询，获取更多产品信息
   const response = await admin.graphql(`
@@ -98,24 +103,30 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const functionsData = await functionsResponse.json();
 
     // 打印获取到的 Shopify Functions 数据到控制台
-    console.log(
-      "Shopify Functions Data:",
-      JSON.stringify(functionsData, null, 2),
-    );
+    // console.log(
+    //   "Shopify Functions Data:",
+    //   JSON.stringify(functionsData, null, 2),
+    // );
 
     return {
       products: nodes,
       shop,
       shopifyFunctions: functionsData.data?.shopifyFunctions?.nodes || [],
+      permissions,
     };
   } catch (error) {
     console.error("Error fetching Shopify Functions:", error);
-    return { products: nodes, shop, shopifyFunctions: [] };
+    return {
+      products: nodes,
+      shop,
+      shopifyFunctions: [],
+      permissions,
+    };
   }
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  console.log("??????");
+  console.log("action triggered");
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
   const action = formData.get("action")?.toString();
@@ -233,13 +244,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     // 创建折扣代码
     try {
-      const discountResponse = await admin.graphql(`
-        mutation {
+      const discountResponse = await admin.graphql(
+        `#graphql
+        mutation discountCodeAppCreate(
+          $code: String!
+          $title: String!
+          $functionId: ID!
+          $startsAt: DateTime!
+        ) {
           discountCodeAppCreate(codeAppDiscount: {
-            code: "${code}",
-            title: "DISCOUNT_TEST",
-            functionId: "${functionId}",
-            startsAt: "${new Date().toISOString()}"
+            code: $code,
+            title: $title,
+            functionId: $functionId,
+            startsAt: $startsAt
           }) {
             codeAppDiscount {
               discountId
@@ -251,8 +268,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
               message
             }
           }
-        }
-      `);
+        }`,
+        {
+          variables: {
+            code: `DISCOUNT_${Math.floor(Math.random() * 10000)}`,
+            title: "DISCOUNT_TEST",
+            functionId,
+            startsAt: new Date().toISOString(),
+          },
+        },
+      );
 
       const discountData = await discountResponse.json();
       console.log("创建折扣结果:", JSON.stringify(discountData, null, 2));
@@ -302,6 +327,17 @@ export default function Index() {
   //     "title": "order-discount-function-test"
   //   }
   // ]
+
+  // 查询权限
+  const {
+    currentPermissions,
+    hasPermission,
+    hasPermissions,
+    getPermissionDescription,
+    getCostInfo,
+  } = usePermission();
+
+  console.log("currentPermissions", currentPermissions);
 
   const fetcher: any = useFetcher<typeof action>();
   const shopify = useAppBridge();
