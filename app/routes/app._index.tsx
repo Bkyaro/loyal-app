@@ -115,73 +115,164 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  console.log("??????");
   const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const action = formData.get("action")?.toString();
+  console.log("action~~", action);
 
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
+  // 现有的创建产品 action
+  if (action === "createProduct") {
+    const color = ["Red", "Orange", "Yellow", "Green"][
+      Math.floor(Math.random() * 4)
+    ];
+    const response = await admin.graphql(
+      `#graphql
+        mutation populateProduct($product: ProductCreateInput!) {
+          productCreate(product: $product) {
+            product {
+              id
+              title
+              handle
+              status
+              variants(first: 10) {
+                edges {
+                  node {
+                    id
+                    price
+                    barcode
+                    createdAt
+                  }
                 }
               }
             }
           }
-        }
-      }`,
-    {
-      variables: {
-        product: {
-          title: `${color} Snowboard`,
+        }`,
+      {
+        variables: {
+          product: {
+            title: `${color} Snowboard`,
+          },
         },
       },
-    },
-  );
-  const responseJson = await response.json();
+    );
+    const responseJson = await response.json();
 
-  const product = responseJson.data!.productCreate!.product!;
-  const variantId = product.variants.edges[0]!.node!.id!;
+    const product = responseJson.data!.productCreate!.product!;
+    const variantId = product.variants.edges[0]!.node!.id!;
 
-  const variantResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyRemixTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        productVariants {
-          id
-          price
-          barcode
-          createdAt
+    const variantResponse = await admin.graphql(
+      `#graphql
+      mutation shopifyRemixTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
+        productVariantsBulkUpdate(productId: $productId, variants: $variants) {
+          productVariants {
+            id
+            price
+            barcode
+            createdAt
+          }
+        }
+      }`,
+      {
+        variables: {
+          productId: product.id,
+          variants: [{ id: variantId, price: "100.00" }],
+        },
+      },
+    );
+
+    const variantResponseJson = await variantResponse.json();
+
+    return {
+      product: responseJson!.data!.productCreate!.product,
+      variant:
+        variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants,
+    };
+  }
+
+  // 新的创建折扣 action
+  if (action === "createDiscount") {
+    console.log("in createDiscount request");
+    // 首先获取 Shopify Functions
+    const functionsResponse = await admin.graphql(`
+      query {
+        shopifyFunctions(first: 10) {
+          nodes {
+            id
+            app {
+              title
+            }
+            apiType
+            title
+          }
         }
       }
-    }`,
-    {
-      variables: {
-        productId: product.id,
-        variants: [{ id: variantId, price: "100.00" }],
-      },
-    },
-  );
+    `);
 
-  const variantResponseJson = await variantResponse.json();
+    const functionsData = await functionsResponse.json();
+    console.log("functionsData", functionsData);
+    const shopifyFunctions = functionsData.data?.shopifyFunctions?.nodes || [];
 
-  return {
-    product: responseJson!.data!.productCreate!.product,
-    variant:
-      variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants,
-  };
+    // 查找 title 为 "product-discount" 的函数
+    const productDiscountFunction = shopifyFunctions.find(
+      (func: any) => func.title === "product-discount",
+    );
+
+    console.log("productDiscountFunction", productDiscountFunction);
+
+    if (!productDiscountFunction) {
+      return {
+        discountError: "找不到 product-discount 函数",
+      };
+    }
+
+    const functionId = productDiscountFunction.id;
+
+    // 生成随机代码
+    const code = `DISCOUNT_${Math.floor(Math.random() * 10000)}`;
+
+    // 创建折扣代码
+    try {
+      const discountResponse = await admin.graphql(`
+        mutation {
+          discountCodeAppCreate(codeAppDiscount: {
+            code: "${code}",
+            title: "DISCOUNT_TEST",
+            functionId: "${functionId}",
+            startsAt: "${new Date().toISOString()}"
+          }) {
+            codeAppDiscount {
+              discountId
+              title
+              code
+            }
+            userErrors {
+              field
+              message
+            }
+          }
+        }
+      `);
+
+      const discountData = await discountResponse.json();
+      console.log("创建折扣结果:", JSON.stringify(discountData, null, 2));
+
+      if (discountData.data?.discountCodeAppCreate?.userErrors?.length > 0) {
+        return {
+          discountError: discountData.data.discountCodeAppCreate.userErrors,
+        };
+      }
+
+      return {
+        discount: discountData.data?.discountCodeAppCreate?.codeAppDiscount,
+      };
+    } catch (error) {
+      console.error("创建折扣时出错:", error);
+      return { discountError: "创建折扣时出错: " + (error as Error).message };
+    }
+  }
+
+  return { error: "未知操作" };
 };
 
 export default function Index() {
@@ -191,7 +282,7 @@ export default function Index() {
     shopifyFunctions: any[];
   }>();
 
-  console.log("shopifyFunctions", shopifyFunctions);
+  // console.log("shopifyFunctions", shopifyFunctions);
   // output
   // [
   //   {
@@ -212,7 +303,7 @@ export default function Index() {
   //   }
   // ]
 
-  const fetcher = useFetcher<typeof action>();
+  const fetcher: any = useFetcher<typeof action>();
   const shopify = useAppBridge();
 
   const isLoading =
@@ -223,6 +314,9 @@ export default function Index() {
     "gid://shopify/Product/",
     "",
   );
+
+  const discount = fetcher.data?.discount;
+  const discountError = fetcher.data?.discountError;
 
   const [searchValue, setSearchValue] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
@@ -256,7 +350,32 @@ export default function Index() {
   //     });
   // }, [shopify]);
 
-  const generateProduct = () => fetcher.submit({}, { method: "POST" });
+  // 添加创建产品和折扣的处理函数
+  const generateProduct = () => {
+    fetcher.submit({ action: "createProduct" }, { method: "POST" });
+  };
+
+  const createDiscount = () => {
+    try {
+      console.log("before fetcher");
+      fetcher.submit({ action: "createDiscount" }, { method: "POST" });
+      console.log("after fetcher");
+    } catch (error) {
+      console.error("Error in createDiscount:", error);
+    }
+  };
+
+  // 显示创建折扣结果
+  useEffect(() => {
+    if (discount) {
+      shopify.toast.show(`折扣代码 ${discount.code} 创建成功`);
+    }
+    if (discountError) {
+      shopify.toast.show(`创建折扣失败: ${JSON.stringify(discountError)}`, {
+        isError: true,
+      });
+    }
+  }, [discount, discountError, shopify]);
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
@@ -287,11 +406,21 @@ export default function Index() {
       primaryAction={{
         content: "创建产品",
         onAction: generateProduct,
-        loading: isLoading,
+        loading:
+          isLoading && fetcher.formData?.get("action") === "createProduct",
       }}
     >
       <Layout>
         <Layout.Section>
+          <CNButton
+            variant='primary'
+            onClick={() => {
+              console.log("???");
+              createDiscount();
+            }}
+          >
+            创建折扣
+          </CNButton>
           <Card>
             <Box padding='400'>
               <BlockStack gap='400'>
@@ -302,6 +431,27 @@ export default function Index() {
                   </div>
                 ) : (
                   <div>No Shopify Functions found</div>
+                )}
+
+                {/* 显示折扣创建结果 */}
+                {discount && (
+                  <Box padding='400'>
+                    <BlockStack gap='200'>
+                      <div>折扣创建成功</div>
+                      <div>代码: {discount.code}</div>
+                      <div>标题: {discount.title}</div>
+                      <div>ID: {discount.discountId}</div>
+                    </BlockStack>
+                  </Box>
+                )}
+
+                {discountError && (
+                  <Box padding='400'>
+                    <BlockStack gap='200'>
+                      <div>折扣创建失败</div>
+                      <pre>{JSON.stringify(discountError, null, 2)}</pre>
+                    </BlockStack>
+                  </Box>
                 )}
               </BlockStack>
             </Box>
