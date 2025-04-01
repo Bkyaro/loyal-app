@@ -4,4 +4,18 @@ query RunInput {
       value
     }
   }
+  cart {
+    lines {
+      merchandise {
+        ... on ProductVariant {
+          id
+          title
+          product {
+            hasAnyTag(tags: ["Limited Edition"])   
+          }
+        }
+        __typename
+      }
+    }
+  }
 }
