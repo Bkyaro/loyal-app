@@ -28,6 +28,8 @@ export function run(input: RunInput): FunctionRunResult {
       };
     });
 
+  console.log("targets", targets);
+
   const DISCOUNT_ITEMS: FunctionRunResult = {
     // https://shopify.dev/docs/api/functions/reference/discounts-allocator/graphql/common-objects/discountapplicationstrategy?api%5Bversion%5D=unstable
     discountApplicationStrategy: DiscountApplicationStrategy.First,
@@ -44,5 +46,6 @@ export function run(input: RunInput): FunctionRunResult {
     ],
   };
 
-  return DISCOUNT_ITEMS;
+  // 返回空折扣信息避免结账页使用时报错
+  return targets.length > 0 ? DISCOUNT_ITEMS : EMPTY_DISCOUNT;
 }
