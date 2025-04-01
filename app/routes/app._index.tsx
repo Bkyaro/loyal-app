@@ -25,8 +25,10 @@ import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { SearchIcon } from "@shopify/polaris-icons";
 import { Button as CNButton } from "../components/ui/button";
-import { getAppPermissions } from "~/services/permission.server";
+import { getAppPermissions } from "~/services/getPermissionData.server";
 import { usePermission } from "~/hooks/usePermission";
+import { useFunction } from "~/hooks/useFunction";
+import { getAppFunctions } from "~/services/getFunctionsData.server";
 
 // 定义产品类型接口，便于TypeScript类型检查
 interface Product {
@@ -53,6 +55,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   // 查询当前插件权限
   const permissions = await getAppPermissions(request);
+
+  // 查询当前插件functions信息
+  const functionsData = await getAppFunctions(request);
+  console.log("functionsData", functionsData);
 
   // 扩展GraphQL查询，获取更多产品信息
   const response = await admin.graphql(`
@@ -83,46 +89,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     },
   } = await response.json();
 
-  // 新增: 获取 Shopify Functions 信息
-  try {
-    const functionsResponse = await admin.graphql(`
-      query {
-        shopifyFunctions(first: 10) {
-          nodes {
-            id
-            app {
-              title
-            }
-            apiType
-            title
-          }
-        }
-      }
-    `);
-
-    const functionsData = await functionsResponse.json();
-
-    // 打印获取到的 Shopify Functions 数据到控制台
-    // console.log(
-    //   "Shopify Functions Data:",
-    //   JSON.stringify(functionsData, null, 2),
-    // );
-
-    return {
-      products: nodes,
-      shop,
-      shopifyFunctions: functionsData.data?.shopifyFunctions?.nodes || [],
-      permissions,
-    };
-  } catch (error) {
-    console.error("Error fetching Shopify Functions:", error);
-    return {
-      products: nodes,
-      shop,
-      shopifyFunctions: [],
-      permissions,
-    };
-  }
+  return {
+    products: nodes,
+    shop,
+    functionsData,
+    permissions,
+  };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -301,34 +273,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const { products, shop, shopifyFunctions } = useLoaderData<{
+  const { products, shop } = useLoaderData<{
     products: Product[];
     shop: string;
-    shopifyFunctions: any[];
   }>();
 
-  // console.log("shopifyFunctions", shopifyFunctions);
-  // output
-  // [
-  //   {
-  //     "id": "0c8bc3db-009e-48f4-93da-xxxxxxxx",
-  //     "app": {
-  //       "title": "loyalol"
-  //     },
-  //     "apiType": "product_discounts",
-  //     "title": "product-discount"
-  //   },
-  //   {
-  //     "id": "426814bd-3d67-40a5-9ef1-xxxxxxxx",
-  //     "app": {
-  //       "title": "loyalol"
-  //     },
-  //     "apiType": "order_discounts",
-  //     "title": "order-discount-function-test"
-  //   }
-  // ]
-
-  // 查询权限
+  // 查询权限信息
   const {
     currentPermissions,
     hasPermission,
@@ -336,8 +286,11 @@ export default function Index() {
     getPermissionDescription,
     getCostInfo,
   } = usePermission();
-
   console.log("currentPermissions", currentPermissions);
+
+  // 查询functions信息
+  const { functionsData } = useFunction();
+  console.log("functionsData", functionsData);
 
   const fetcher: any = useFetcher<typeof action>();
   const shopify = useAppBridge();
@@ -461,9 +414,9 @@ export default function Index() {
             <Box padding='400'>
               <BlockStack gap='400'>
                 <div>Shopify Functions</div>
-                {shopifyFunctions && shopifyFunctions.length > 0 ? (
+                {functionsData && functionsData.length > 0 ? (
                   <div style={{ overflowX: "auto" }}>
-                    <pre>{JSON.stringify(shopifyFunctions, null, 2)}</pre>
+                    <pre>{JSON.stringify(functionsData, null, 2)}</pre>
                   </div>
                 ) : (
                   <div>No Shopify Functions found</div>
