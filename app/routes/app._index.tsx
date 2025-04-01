@@ -101,8 +101,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   console.log("action triggered");
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
-  const action = formData.get("action")?.toString();
+  const action = formData.get("_action")?.toString();
   console.log("action~~", action);
+
+  if (action === "createDiscount") {
+    // 执行折扣创建逻辑
+  }
 
   // 现有的创建产品 action
   if (action === "createProduct") {
@@ -279,13 +283,7 @@ export default function Index() {
   }>();
 
   // 查询权限信息
-  const {
-    currentPermissions,
-    hasPermission,
-    hasPermissions,
-    getPermissionDescription,
-    getCostInfo,
-  } = usePermission();
+  const { currentPermissions } = usePermission();
   console.log("currentPermissions", currentPermissions);
 
   // 查询functions信息
@@ -333,17 +331,11 @@ export default function Index() {
 
   // 添加创建产品和折扣的处理函数
   const generateProduct = () => {
-    fetcher.submit({ action: "createProduct" }, { method: "POST" });
+    fetcher.submit({ _action: "createProduct" }, { method: "POST" });
   };
 
   const createDiscount = () => {
-    try {
-      console.log("before fetcher");
-      fetcher.submit({ action: "createDiscount" }, { method: "POST" });
-      console.log("after fetcher");
-    } catch (error) {
-      console.error("Error in createDiscount:", error);
-    }
+    fetcher.submit({ _action: "createDiscount" }, { method: "POST" });
   };
 
   // 显示创建折扣结果
