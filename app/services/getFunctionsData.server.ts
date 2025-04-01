@@ -2,11 +2,7 @@
  * 查询插件当前存在的functions
  */
 
-import { authenticate } from "~/shopify.server";
-
-export async function getAppFunctions(request: Request): Promise<any> {
-  const { admin } = await authenticate.admin(request);
-
+export async function getAppFunctions(admin: any): Promise<any> {
   const functions = await admin.graphql(`
     query {
         shopifyFunctions(first: 10) {

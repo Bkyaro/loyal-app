@@ -1,12 +1,7 @@
 /**
  * 查询当前已授予权限
  */
-
-import { authenticate } from "~/shopify.server";
-
-export async function getAppPermissions(request: Request): Promise<any> {
-  const { admin } = await authenticate.admin(request);
-
+export async function getAppPermissions(admin: any): Promise<any> {
   const permissions = await admin.graphql(`
     query {
       currentAppInstallation {

@@ -54,10 +54,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const shop = session.shop;
 
   // 查询当前插件权限
-  const permissions = await getAppPermissions(request);
+  const permissions = await getAppPermissions(admin);
 
   // 查询当前插件functions信息
-  const functionsData = await getAppFunctions(request);
+  const functionsData = await getAppFunctions(admin);
   console.log("functionsData", functionsData);
 
   // 扩展GraphQL查询，获取更多产品信息
