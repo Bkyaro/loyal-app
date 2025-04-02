@@ -224,7 +224,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         mutation discountCodeAppCreate(
           $code: String!
           $title: String!
-          $functionId: ID!
+          $functionId: String!
           $startsAt: DateTime!
         ) {
           discountCodeAppCreate(codeAppDiscount: {
@@ -235,8 +235,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           }) {
             codeAppDiscount {
               discountId
-              title
-              code
             }
             userErrors {
               field
@@ -246,8 +244,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         }`,
         {
           variables: {
-            code: `DISCOUNT_${Math.floor(Math.random() * 10000)}`,
-            title: "DISCOUNT_TEST",
+            code: code,
+            title: "PRODUCT_DISCOUNT_TEST",
             functionId,
             startsAt: new Date().toISOString(),
           },
@@ -255,6 +253,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       );
 
       const discountData = await discountResponse.json();
+
       console.log("创建折扣结果:", JSON.stringify(discountData, null, 2));
 
       if (discountData.data?.discountCodeAppCreate?.userErrors?.length > 0) {
@@ -340,7 +339,8 @@ export default function Index() {
   // 显示创建折扣结果
   useEffect(() => {
     if (discount) {
-      shopify.toast.show(`折扣代码 ${discount.code} 创建成功`);
+      console.log("折扣券创建信息", discount);
+      shopify.toast.show(`折扣代码创建成功`);
     }
     if (discountError) {
       shopify.toast.show(`创建折扣失败: ${JSON.stringify(discountError)}`, {

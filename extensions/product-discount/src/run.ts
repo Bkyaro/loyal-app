@@ -38,7 +38,7 @@ export function run(input: RunInput): FunctionRunResult {
         targets: targets,
         value: {
           percentage: {
-            value: 100,
+            value: 0.1,
           },
         },
         message: "10% OFF",
