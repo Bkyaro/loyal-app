@@ -5,14 +5,13 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import styles from "./tailwind.css?url";
 import { LinksFunction, MetaFunction } from "@remix-run/node";
+import styles from "~/styles/tailwind.css?url";
+import "swiper/css";
+import "swiper/css/navigation";
+import "~/styles/swiper-custom.css";
 
 export const links: LinksFunction = () => [
-  {
-    rel: "stylesheet",
-    href: "https://cdn.shopify.com/static/fonts/inter/v4/styles.css",
-  },
   { rel: "stylesheet", href: styles },
   {
     rel: "preload",
@@ -31,9 +30,9 @@ export default function App() {
   return (
     <html>
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="preconnect" href="https://cdn.shopify.com/" />
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width,initial-scale=1' />
+        <link rel='preconnect' href='https://cdn.shopify.com/' />
         <Meta />
         <Links />
       </head>

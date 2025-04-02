@@ -2,7 +2,7 @@ import { vitePlugin as remix } from "@remix-run/dev";
 import { installGlobals } from "@remix-run/node";
 import { defineConfig, type UserConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
-import tailwindcss from "@tailwindcss/vite";
+
 installGlobals({ nativeFetch: true });
 
 // Related: https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
@@ -58,11 +58,10 @@ export default defineConfig({
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
         v3_lazyRouteDiscovery: true,
-        v3_singleFetch: false,
+        v3_singleFetch: true,
         v3_routeConfig: true,
       },
     }),
-    tailwindcss(),
     tsconfigPaths(),
   ],
   build: {

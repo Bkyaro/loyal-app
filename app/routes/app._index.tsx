@@ -6,7 +6,6 @@ import {
   Layout,
   Text,
   Card,
-  Button,
   BlockStack,
   Box,
   List,
@@ -24,7 +23,7 @@ import {
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { SearchIcon } from "@shopify/polaris-icons";
-import { Button as CNButton } from "../components/ui/button";
+import { Button } from "../components/ui/button";
 import { getAppPermissions } from "~/services/getPermissionData.server";
 import { usePermission } from "~/hooks/usePermission";
 import { useFunction } from "~/hooks/useFunction";
@@ -385,15 +384,15 @@ export default function Index() {
     >
       <Layout>
         <Layout.Section>
-          <CNButton
-            variant='primary'
+          <Button
+            className='bg-black hover:bg-slate-800 text-red-600'
             onClick={() => {
               console.log("???");
               createDiscount();
             }}
           >
             创建折扣
-          </CNButton>
+          </Button>
           <Card>
             <Box padding='400'>
               <BlockStack gap='400'>
