@@ -97,15 +97,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  console.log("action triggered");
   const { admin } = await authenticate.admin(request);
   const formData = await request.formData();
   const action = formData.get("_action")?.toString();
-  console.log("action~~", action);
-
-  if (action === "createDiscount") {
-    // 执行折扣创建逻辑
-  }
 
   // 现有的创建产品 action
   if (action === "createProduct") {
@@ -178,7 +172,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // 新的创建折扣 action
   if (action === "createDiscount") {
-    console.log("in createDiscount request");
     // 首先获取 Shopify Functions
     const functionsResponse = await admin.graphql(`
       query {
@@ -196,7 +189,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     `);
 
     const functionsData = await functionsResponse.json();
-    console.log("functionsData", functionsData);
+
     const shopifyFunctions = functionsData.data?.shopifyFunctions?.nodes || [];
 
     // 查找 title 为 "product-discount" 的函数
@@ -253,8 +246,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       );
 
       const discountData = await discountResponse.json();
-
-      console.log("创建折扣结果:", JSON.stringify(discountData, null, 2));
 
       if (discountData.data?.discountCodeAppCreate?.userErrors?.length > 0) {
         return {
@@ -385,13 +376,10 @@ export default function Index() {
       <Layout>
         <Layout.Section>
           <Button
-            className='bg-black hover:bg-slate-800 text-red-600'
-            onClick={() => {
-              console.log("???");
-              createDiscount();
-            }}
+            className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50'
+            onClick={createDiscount}
           >
-            创建折扣
+            创建折扣券
           </Button>
           <Card>
             <Box padding='400'>
@@ -410,9 +398,7 @@ export default function Index() {
                   <Box padding='400'>
                     <BlockStack gap='200'>
                       <div>折扣创建成功</div>
-                      <div>代码: {discount.code}</div>
-                      <div>标题: {discount.title}</div>
-                      <div>ID: {discount.discountId}</div>
+                      <div>{discount.code}</div>
                     </BlockStack>
                   </Box>
                 )}
