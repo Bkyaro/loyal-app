@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  useActionData,
+  useFetcher,
+  useLoaderData,
+  useSubmit,
+} from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -48,7 +53,6 @@ interface Product {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  // console.log("requst!", JSON.stringify(request));
   const { admin, session } = await authenticate.admin(request);
   const shop = session.shop;
 
@@ -57,7 +61,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   // 查询当前插件functions信息
   const functionsData = await getAppFunctions(admin);
-  console.log("functionsData", functionsData);
 
   // 扩展GraphQL查询，获取更多产品信息
   const response = await admin.graphql(`
@@ -197,8 +200,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       (func: any) => func.title === "product-discount",
     );
 
-    console.log("productDiscountFunction", productDiscountFunction);
-
     if (!productDiscountFunction) {
       return {
         discountError: "找不到 product-discount 函数",
@@ -262,6 +263,180 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     }
   }
 
+  // 新的创建完整规则折扣券 action
+  if (action === "createComplexDiscount") {
+    // 首先获取 Shopify Functions
+    const functionsResponse = await admin.graphql(`
+      query {
+        shopifyFunctions(first: 10) {
+          nodes {
+            id
+            app {
+              title
+            }
+            apiType
+            title
+          }
+        }
+      }
+    `);
+
+    const functionsData = await functionsResponse.json();
+
+    const shopifyFunctions = functionsData.data?.shopifyFunctions?.nodes || [];
+
+    // 查找 title 为 "product-discount" 的函数
+    const productDiscountFunction = shopifyFunctions.find(
+      (func: any) => func.title === "product-discount",
+    );
+
+    if (!productDiscountFunction) {
+      return {
+        discountError: "找不到 product-discount 函数",
+      };
+    }
+
+    const functionId = productDiscountFunction.id;
+
+    // 生成随机代码
+    const code = `DISCOUNT_${Math.floor(Math.random() * 10000)}`;
+
+    const response = await admin.graphql(
+      `#graphql
+      mutation discountCodeAppCreate($codeAppDiscount: DiscountCodeAppInput!) {
+        discountCodeAppCreate(codeAppDiscount: $codeAppDiscount) {
+          codeAppDiscount {
+            discountId
+            title
+            appDiscountType {
+              description
+              functionId
+            }
+            combinesWith {
+              orderDiscounts
+              productDiscounts
+              shippingDiscounts
+            }
+            codes(first: 100) {
+              nodes {
+                code
+              }
+            }
+            status
+            usageLimit
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }`,
+      {
+        variables: {
+          codeAppDiscount: {
+            code: code,
+            title: "Take 5$ from order discount",
+            functionId: functionId,
+            appliesOncePerCustomer: true,
+            combinesWith: {
+              orderDiscounts: true,
+              productDiscounts: true,
+              shippingDiscounts: true,
+            },
+            startsAt: "2021-02-02T17:09:21Z",
+            endsAt: "2026-02-02T17:09:21Z",
+            usageLimit: 1,
+            metafields: [
+              {
+                namespace: "default",
+                key: "function-configuration",
+                type: "json",
+                value:
+                  '{"discounts":[{"value":{"fixedAmount":{"amount":5}},"targets":[{"orderSubtotal":{"excludedVariantIds":[]}}]}],"discountApplicationStrategy":"FIRST"}',
+              },
+            ],
+          },
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    return {
+      complexDiscount: data,
+    };
+  }
+
+  // 创建基础折扣券
+  if (action === "createBasicDiscount") {
+    const response = await admin.graphql(
+      `#graphql
+  mutation CreateDiscountCode($basicCodeDiscount: DiscountCodeBasicInput!) {
+    discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+      codeDiscountNode {
+        id
+        codeDiscount {
+          ... on DiscountCodeBasic {
+            title
+            startsAt
+            endsAt
+            customerSelection {
+              ... on DiscountCustomers {
+                customers {
+                  id
+                }
+              }
+            }
+            customerGets {
+              value {
+                ... on DiscountPercentage {
+                  percentage
+                }
+              }
+            }
+          }
+        }
+      }
+      userErrors {
+        field
+        message
+      }
+    }
+  }`,
+      {
+        variables: {
+          basicCodeDiscount: {
+            title: "10% 基础折扣券no-functions",
+            code: "10FORYOU",
+            startsAt: "2025-01-01T00:00:00Z",
+            endsAt: "2025-12-31T23:59:59Z",
+            customerSelection: {
+              all: true,
+            },
+            customerGets: {
+              value: {
+                percentage: 0.1,
+              },
+              items: {
+                all: true,
+              },
+            },
+            minimumRequirement: {
+              subtotal: {
+                greaterThanOrEqualToSubtotal: "50.0",
+              },
+            },
+            usageLimit: 100,
+            appliesOncePerCustomer: true,
+          },
+        },
+      },
+    );
+
+    const data = await response.json();
+
+    return { basicDiscount: data };
+  }
   return { error: "未知操作" };
 };
 
@@ -270,6 +445,7 @@ export default function Index() {
     products: Product[];
     shop: string;
   }>();
+  const actioNData = useActionData<any>();
 
   // 查询权限信息
   const { currentPermissions } = usePermission();
@@ -280,6 +456,7 @@ export default function Index() {
   console.log("functionsData", functionsData);
 
   const fetcher: any = useFetcher<typeof action>();
+  const submit = useSubmit();
   const shopify = useAppBridge();
 
   const isLoading =
@@ -293,6 +470,14 @@ export default function Index() {
 
   const discount = fetcher.data?.discount;
   const discountError = fetcher.data?.discountError;
+  // const complexDiscount = fetcher.data?.complexDiscount;
+
+  useEffect(() => {
+    if (actioNData) {
+      console.log("complexDiscount", actioNData.complexDiscount);
+      console.log("basicDiscount", actioNData.basicDiscount);
+    }
+  }, [actioNData]);
 
   const [searchValue, setSearchValue] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
@@ -325,6 +510,20 @@ export default function Index() {
 
   const createDiscount = () => {
     fetcher.submit({ _action: "createDiscount" }, { method: "POST" });
+  };
+
+  const createComplexDiscount = () => {
+    // fetcher.submit({ _action: "createComplexDiscount" }, { method: "POST" });
+    const formData = new FormData();
+    formData.append("_action", "createComplexDiscount");
+    submit(formData, { method: "POST" });
+  };
+
+  const createBasicDiscount = () => {
+    // fetcher.submit({ _action: "createBasicDiscount" }, { method: "POST" });
+    const formData = new FormData();
+    formData.append("_action", "createBasicDiscount");
+    submit(formData, { method: "POST" });
   };
 
   // 显示创建折扣结果
@@ -375,12 +574,27 @@ export default function Index() {
     >
       <Layout>
         <Layout.Section>
-          <Button
-            className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50'
-            onClick={createDiscount}
-          >
-            创建折扣券
-          </Button>
+          <div className='flex gap-2'>
+            <Button
+              className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50'
+              onClick={createDiscount}
+            >
+              创建折扣券
+            </Button>
+            <Button
+              className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50'
+              onClick={createBasicDiscount}
+            >
+              {`创建基础折扣券(无function)`}
+            </Button>
+            <Button
+              className='bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50'
+              onClick={createComplexDiscount}
+            >
+              创建完整规则折扣券
+            </Button>
+          </div>
+
           <Card>
             <Box padding='400'>
               <BlockStack gap='400'>
