@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Page, Card, Text, Button, Grid } from "@shopify/polaris";
 
 // 引入图片
@@ -23,6 +23,24 @@ interface CardItem {
 }
 
 export default function OnSiteContent() {
+  // 为小屏幕添加响应式处理
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
+
+  useEffect(() => {
+    const checkScreenWidth = () => {
+      setIsMobileScreen(window.innerWidth <= 391);
+    };
+
+    // 初始检查
+    checkScreenWidth();
+
+    // 添加监听器
+    window.addEventListener("resize", checkScreenWidth);
+
+    // 清理监听器
+    return () => window.removeEventListener("resize", checkScreenWidth);
+  }, []);
+
   // 模拟数据 - 站内内容
   const onSiteItems: CardItem[] = [
     {
@@ -158,14 +176,16 @@ export default function OnSiteContent() {
                         </div>
                       </div>
 
-                      {/* 右侧: 图片 */}
-                      <div className='flex-none flex items-center justify-end w-[120px]'>
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className='max-h-full max-w-full object-contain'
-                        />
-                      </div>
+                      {/* 右侧: 图片 - 在小屏幕下隐藏 */}
+                      {!isMobileScreen && (
+                        <div className='flex-none flex items-center justify-end w-[120px]'>
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className='max-h-full max-w-full object-contain'
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -185,7 +205,7 @@ export default function OnSiteContent() {
             {embeddedItems.map((item) => (
               <div key={item.id} className='w-full'>
                 <Card>
-                  <div className=''>
+                  <div>
                     <div className='flex items-center justify-between'>
                       {/* 左侧: 文本和按钮 */}
                       <div className='flex-1 pr-4 flex flex-col justify-between h-full min-w-0'>
@@ -218,14 +238,16 @@ export default function OnSiteContent() {
                         </div>
                       </div>
 
-                      {/* 右侧: 图片 */}
-                      <div className='flex-none flex items-center justify-end w-[120px]'>
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className='max-h-full max-w-full object-contain'
-                        />
-                      </div>
+                      {/* 右侧: 图片 - 在小屏幕下隐藏 */}
+                      {!isMobileScreen && (
+                        <div className='flex-none flex items-center justify-end w-[120px] '>
+                          <img
+                            src={item.image}
+                            alt={item.title}
+                            className='max-h-full max-w-full object-contain'
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
