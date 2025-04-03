@@ -1,0 +1,260 @@
+#### 插件创建负责折扣券(functions)
+mutation discountCodeAppCreate($codeAppDiscount: DiscountCodeAppInput!) {
+  discountCodeAppCreate(codeAppDiscount: $codeAppDiscount) {
+    codeAppDiscount {
+      discountId
+      title
+      appDiscountType {
+        description
+        functionId
+      }
+      combinesWith {
+        orderDiscounts
+        productDiscounts
+        shippingDiscounts
+      }
+      codes(first: 100) {
+        nodes {
+          code
+        }
+      }
+      status
+      usageLimit
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+#   {
+#     variables: {
+#       codeAppDiscount: {
+#         code: code,
+#         title: "Take 5$ from order discount",
+#         functionId: functionId,
+#         appliesOncePerCustomer: true,
+#         combinesWith: {
+#           orderDiscounts: true,
+#           productDiscounts: true,
+#           shippingDiscounts: true,
+#         },
+#         startsAt: "2021-02-02T17:09:21Z",
+#         endsAt: "2026-02-02T17:09:21Z",
+#         usageLimit: 1,
+#         metafields: [
+#           {
+#             namespace: "default",
+#             key: "function-configuration",
+#             type: "json",
+#             value:
+#               '{"discounts":[{"value":{"fixedAmount":{"amount":5}},"targets":[{"orderSubtotal":{"excludedVariantIds":[]}}]}],"discountApplicationStrategy":"FIRST"}',
+#           },
+#         ],
+#       },
+#     },
+#   }
+
+#### 查询店铺信息
+query shopInfo {
+  shop {
+    name
+    url
+    myshopifyDomain
+    plan {
+      displayName
+      partnerDevelopment
+      shopifyPlus
+    }
+  }
+}
+
+#### 获取指定产品metafield信息
+query ProductMetafield($namespace: String!, $key: String!, $ownerId: ID!) {
+  product(id: $ownerId) {
+    whatthehellbrothisismetafield: metafield(namespace: $namespace, key: $key) {
+      value
+    }
+  }
+}
+
+# {
+#   "namespace": "custom",
+#   "key": "material",
+#   "ownerId": "gid://shopify/Product/10542282408239"
+# }
+
+#### 获取指定产品metafields信息
+query ProductMetafields {
+  product(id: "gid://shopify/Product/10542282408239") {
+    metafields(first: 3) {
+      edges {
+        node {
+          namespace
+          key
+          value
+          createdAt
+          type
+        }
+      }
+    }
+  }
+}
+
+#### 获取指定产品所有信息
+query ProductInfo {
+  product(id: "gid://shopify/Product/10542282408239") {
+    collections(first: 5) {
+      edges {
+        node {
+          handle
+        }
+      }
+    }
+    createdAt
+    defaultCursor
+    description
+    descriptionHtml
+    featuredMedia {
+      id
+    }
+    feedback {
+      details {
+        messages {
+          message
+        }
+      }
+    }
+    giftCardTemplateSuffix
+    handle
+    hasOnlyDefaultVariant
+    hasOutOfStockVariants
+    id
+    media(first: 5) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+    inCollection(id: "gid://shopify/Collection/1007901140")
+    isGiftCard
+    legacyResourceId
+    metafield(key: "Material", namespace: "custom") {
+      namespace
+      value
+    }
+    metafields(first: 5) {
+      edges {
+        node {
+          namespace
+          value
+        }
+      }
+    }
+    onlineStorePreviewUrl
+    onlineStoreUrl
+    options {
+      name
+    }
+    priceRangeV2 {
+      maxVariantPrice {
+        amount
+      }
+      minVariantPrice {
+        amount
+      }
+    }
+    productType
+    # resourcePublicationsCount {
+    #   count
+    # }
+    # availablePublicationsCount {
+    #   count
+    # }
+    publishedAt
+    # resourcePublications(first: 5) {
+    #   edges {
+    #     node {
+    #       isPublished
+    #     }
+    #   }
+    # }
+    # resourcePublicationOnCurrentPublication {
+    #   publication {
+    #     catalog{
+    #       title
+    #     }
+    #     id
+    #   }
+    #   publishDate
+    #   isPublished
+    # }
+    seo {
+      title
+    }
+    id
+    tags
+    templateSuffix
+    title
+    totalInventory
+    tracksInventory
+    # unpublishedPublications(first: 5) {
+    #   edges {
+    #     node {
+    #       catalog{
+    #         title
+    #       }
+    #     }
+    #   }
+    # }
+    updatedAt
+    variants(first: 5) {
+      edges {
+        node {
+          displayName
+        }
+      }
+    }
+    variantsCount {
+      count
+    }
+    vendor
+  }
+}
+
+#### 新定义metafield
+mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
+  metafieldDefinitionCreate(definition: $definition) {
+    createdDefinition {
+      id
+      name
+      useAsCollectionCondition
+      access {
+        admin
+      }
+    }
+    userErrors {
+      field
+      message
+      code
+      elementIndex
+    }
+  }
+}
+
+# {
+#   "definition": {
+#     "name": "Responsible",
+#     "namespace": "responseible",
+#     "key": "belongs",
+#     "description": "graphql create metafield test",
+#     "type": "list.single_line_text_field",
+#     "ownerType": "PRODUCT",
+#     "useAsCollectionCondition": true,
+#     "access": {
+# 			"admin":"MERCHANT_READ"
+#     }
+#   }
+# }
