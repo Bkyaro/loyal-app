@@ -64,3 +64,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 隐藏滚动条但保留滚动功能 */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}

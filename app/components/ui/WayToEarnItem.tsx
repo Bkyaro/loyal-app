@@ -9,6 +9,7 @@ import {
 
 interface WayToEarnItemProps {
   icon: string;
+  iconSvg?: string;
   title: string;
   points: string;
   onEdit?: () => void;
@@ -17,6 +18,7 @@ interface WayToEarnItemProps {
 
 export function WayToEarnItem({
   icon,
+  iconSvg,
   title,
   points,
   onEdit = () => {},
@@ -24,21 +26,15 @@ export function WayToEarnItem({
 }: WayToEarnItemProps) {
   return (
     <>
-      <Box paddingBlockStart='400' paddingBlockEnd='400'>
+      <div className='p-4 pt-0'>
         <InlineStack align='space-between'>
           <InlineStack gap='400'>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "#F4F6F8",
-                borderRadius: "8px",
-              }}
-            >
-              {icon}
+            <div className='w-[40px] h-[40px] rounded-sm flex items-center justify-center bg-[#F4F6F8] border border-[#E0E0E0]'>
+              {iconSvg ? (
+                <img src={iconSvg} alt={title} className='w-[24px] h-[24px]' />
+              ) : (
+                icon
+              )}
             </div>
             <BlockStack>
               <Text variant='bodyMd' as='p' fontWeight='semibold'>
@@ -53,7 +49,7 @@ export function WayToEarnItem({
             Edit
           </Button>
         </InlineStack>
-      </Box>
+      </div>
       {showDivider && <Divider />}
     </>
   );
