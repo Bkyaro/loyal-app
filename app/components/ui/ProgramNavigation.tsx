@@ -52,7 +52,7 @@ export function ProgramNavigation({
               key={tab.id}
               className={`cursor-pointer px-5 py-4 text-sm font-medium flex-shrink-0 ${
                 isActive(tab.path)
-                  ? "text-[#5c6ac4] border-b-2 border-[#5c6ac4] -mb-px"
+                  ? "text-[#5c6ac4] border-b-2 border-[#5c6ac4]"
                   : "text-[#637381] hover:text-[#212b36] hover:border-b-2 hover:border-[#c4cdd5]"
               }`}
               onClick={() => handleTabClick(tab.path)}
