@@ -23,6 +23,7 @@ export default function App() {
         <Link to='/app' rel='home'>
           Home
         </Link>
+        <Link to='/app/program'>Program</Link>
         <Link to='/app/on-site-content'>On-Site Content</Link>
       </NavMenu>
       <Outlet />
