@@ -21,7 +21,6 @@ import programData, { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 const { emptySearchSvg } = programData;
 
 export default function AppProgram() {
-  const [isActions, setIsActions] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   // 检查当前是否在子路由
@@ -31,10 +30,6 @@ export default function AppProgram() {
 
   const handleViewAllClick = () => {
     navigate("/app/program/points/actions");
-  };
-
-  const handleBackClick = () => {
-    navigate("/app/program/points");
   };
 
   // 主页的积分标签组件
@@ -131,7 +126,9 @@ export default function AppProgram() {
                       <div className='text-sm text-[#637381]'>
                         Add ways customers can earn points
                       </div>
-                      <Link url='#' onClick={handleAddWaysClick}>
+                      <Link
+                        url={`/app/program/points/actions?select_activity_rule=true`}
+                      >
                         Add ways to earn
                       </Link>
                     </div>

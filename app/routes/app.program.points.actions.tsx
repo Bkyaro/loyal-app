@@ -8,8 +8,10 @@ import {
   Modal,
   Loading,
   InlineStack,
+  Link,
+  Layout,
 } from "@shopify/polaris";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate, useSearchParams } from "@remix-run/react";
 import { WayToEarnItem } from "~/components/ui/WayToEarnItem";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import programData from "~/mock/programData";
@@ -21,6 +23,15 @@ export default function ProgramActions() {
   const [actions, setActions] = useState<WayToEarn[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // 检查URL参数是否需要显示活动规则选择弹窗
+  useEffect(() => {
+    const shouldShowModal = searchParams.get("select_activity_rule") === "true";
+    if (shouldShowModal) {
+      setShowAddModal(true);
+    }
+  }, [searchParams]);
 
   // 模拟数据加载
   useEffect(() => {
@@ -48,40 +59,7 @@ export default function ProgramActions() {
   }
 
   // 如果没有积分兑换方式，显示空状态
-  if (actions.length === 0) {
-    return (
-      <Page
-        backAction={{
-          content: "Program",
-          onAction: handleBackClick,
-        }}
-        title='Actions'
-      >
-        <div className='flex justify-center items-center p-4 flex-col'>
-          <img
-            src={emptySearchSvg}
-            alt='No actions found'
-            className='w-[120px] mb-4'
-          />
-          <Text variant='headingMd' as='h2'>
-            No actions found
-          </Text>
-          <div className='mt-4'>
-            <Button onClick={() => setShowAddModal(true)}>Add an action</Button>
-          </div>
-        </div>
 
-        {showAddModal && (
-          <AddWaysToEarnModal
-            open={showAddModal}
-            onClose={() => setShowAddModal(false)}
-          />
-        )}
-      </Page>
-    );
-  }
-
-  // 正常状态 - 显示所有积分兑换方式
   return (
     <Page
       backAction={{
@@ -89,25 +67,49 @@ export default function ProgramActions() {
         onAction: handleBackClick,
       }}
       title='Actions'
-      primaryAction={
-        <Button onClick={handleAddWaysClick}>Add ways to earn</Button>
-      }
+      primaryAction={{
+        content: "Add ways to earn",
+        onAction: handleAddWaysClick,
+      }}
+      fullWidth={true}
     >
-      <Card>
-        <BlockStack gap='400'>
-          {actions.map((action, index) => (
-            <div key={action.id}>
-              <WayToEarnItem
-                icon={action.icon}
-                iconSvg={action.iconSvg}
-                title={action.title}
-                points={action.points}
-                showDivider={index < actions.length - 1}
-              />
+      {!actions || !actions.length ? (
+        <Card>
+          <div className='w-full flex justify-center items-center p-4 flex-col'>
+            <img
+              src={emptySearchSvg}
+              alt='No actions found'
+              className='w-[120px] mb-4'
+            />
+            <Text variant='headingMd' as='h2'>
+              No actions found
+            </Text>
+            <div className='mt-4'>
+              <Link url='#' onClick={() => setShowAddModal(true)}>
+                Add an action
+              </Link>{" "}
+              so your customers can start earning points.
             </div>
-          ))}
-        </BlockStack>
-      </Card>
+          </div>
+        </Card>
+      ) : (
+        <Card padding='0'>
+          <div className='w-full'>
+            {actions.map((action, index) => (
+              <div key={action.id}>
+                <WayToEarnItem
+                  icon={action.icon}
+                  iconSvg={action.iconSvg}
+                  title={action.title}
+                  points={action.points}
+                  showDivider={index < actions.length - 1}
+                  onEdit={() => console.log(`编辑规则: ${action.title}`)}
+                />
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {showAddModal && (
         <AddWaysToEarnModal
