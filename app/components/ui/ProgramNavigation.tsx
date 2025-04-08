@@ -10,11 +10,13 @@ interface Tab {
 interface ProgramNavigationProps {
   tabs: Tab[];
   className?: string;
+  rootPath?: string;
 }
 
 export function ProgramNavigation({
   tabs,
   className = "",
+  rootPath = "/app/program",
 }: ProgramNavigationProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,17 +24,17 @@ export function ProgramNavigation({
   // 确定当前选中的选项卡
   const isActive = useCallback(
     (path: string) => {
-      if (path === "/app/program" && location.pathname === "/app/program") {
+      if (path === rootPath && location.pathname === rootPath) {
         return true;
       }
 
-      if (path !== "/app/program" && location.pathname.includes(path)) {
+      if (path !== rootPath && location.pathname.includes(path)) {
         return true;
       }
 
       return false;
     },
-    [location],
+    [location, rootPath],
   );
 
   const handleTabClick = (path: string) => {

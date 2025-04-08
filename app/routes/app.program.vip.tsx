@@ -6,5 +6,5 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export default function ProgramVIP() {
   // 内容在 app.program.tsx 中通过renderContent函数渲染
-  return null;
-} 
+  return <h3>program vip page</h3>;
+}
