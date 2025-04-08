@@ -11,11 +11,13 @@ import {
   Link,
   Box,
   Badge,
+  Button,
+  ButtonGroup,
 } from "@shopify/polaris";
 import { useNavigate } from "@remix-run/react";
 import { WaysToEarnSummaryCard } from "../sections/WaysToEarnSummaryCard";
 import { WaysToEarnIconCard } from "../sections/WaysToEarnIconCard";
-
+import { WayToEarn } from "~/mock/programData";
 export interface ActionFormProps {
   title: string;
   backAction?: {
@@ -24,10 +26,11 @@ export interface ActionFormProps {
   };
   children?: ReactNode;
   summaryContent?: ReactNode;
-  primaryActionContent?: string;
   onPrimaryAction?: () => void;
-  isActive?: boolean;
+  onDelete?: () => void;
+  isEditing?: boolean;
   defaultIcon?: string;
+  initialData?: WayToEarn;
 }
 
 export function ActionForm({
@@ -38,19 +41,23 @@ export function ActionForm({
   },
   children,
   summaryContent,
-  primaryActionContent = "Create",
   onPrimaryAction = () => {},
-  isActive = true,
+  onDelete,
+  isEditing = false,
   defaultIcon,
+  initialData,
 }: ActionFormProps) {
-  const navigate = useNavigate();
-
+  const {
+    active = false,
+    isCustomIcon = false,
+    customIcon = "",
+  } = initialData || {};
   return (
     <Page
       backAction={backAction}
       title={title}
       primaryAction={{
-        content: primaryActionContent,
+        content: isEditing ? "Save" : "Create",
         onAction: onPrimaryAction,
       }}
       fullWidth
@@ -62,7 +69,7 @@ export function ActionForm({
         <div className='w-1/3'>
           {/* Summary板块 */}
           <WaysToEarnSummaryCard
-            isActive={isActive}
+            isActive={active}
             summaryContent={summaryContent}
             onStatusChange={(status) => {
               console.log("status changed", status);
@@ -70,7 +77,8 @@ export function ActionForm({
           />
           <div className='mt-4'>
             <WaysToEarnIconCard
-              isActive={isActive}
+              isCustomIcon={isCustomIcon}
+              customIcon={customIcon}
               summaryContent={summaryContent}
               onSelectChange={(value: string) => {
                 console.log("value changed", value);
@@ -92,6 +100,14 @@ export function ActionForm({
           </div>
         </div>
       </div>
+      {/* 如果是编辑页面，则显示删除按钮 */}
+      {isEditing && onDelete && (
+        <div className='mt-4 flex justify-end'>
+          <Button tone='critical' size='large' onClick={onDelete}>
+            Delete
+          </Button>
+        </div>
+      )}
     </Page>
   );
 }

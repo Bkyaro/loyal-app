@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   Text,
@@ -10,22 +10,46 @@ import {
 import { ActionForm } from "~/components/ui/ActionForm";
 import { ActionSummary } from "~/components/ui/ActionSummary";
 import { useNavigate } from "@remix-run/react";
-import birthdaySvg from "~/assets/program/ways-to-earn/birthday.svg";
+import { WayToEarn } from "~/mock/programData";
 
-export function BirthdayAction() {
-  const [points, setPoints] = useState<string>("200");
+interface BirthdayActionProps {
+  isEditing?: boolean;
+  initialData?: WayToEarn;
+  onSave?: (data: any) => void;
+  onDelete?: () => void;
+}
+
+export function BirthdayAction({
+  isEditing = false,
+  initialData,
+  onSave,
+  onDelete,
+}: BirthdayActionProps) {
+  const [points, setPoints] = useState<string>(
+    initialData ? initialData.points : "200",
+  );
   const navigate = useNavigate();
 
   const handleBackClick = () => {
     navigate("/app/program/points/actions");
   };
 
-  const handleCreateAction = () => {
-    console.log("Creating birthday action with", { points });
-    // todo: 调用创建API
+  const handleAction = () => {
+    const data = { points };
+
+    // 编辑页/创建页调用不同api
+    if (isEditing && onSave) {
+      // 编辑页save
+      onSave(data);
+    } else {
+      // 创建页create
+      console.log("Creating birthday action with", data);
+      // In a real implementation, this would call an API
+      navigate("/app/program/points/actions");
+    }
   };
 
-  // Summary content using the shared component
+  // Summary content
   const summaryContent = (
     <ActionSummary
       items={[
@@ -43,9 +67,11 @@ export function BirthdayAction() {
         content: "Actions",
         onAction: handleBackClick,
       }}
-      onPrimaryAction={handleCreateAction}
+      onPrimaryAction={handleAction}
+      onDelete={isEditing ? onDelete : undefined}
       summaryContent={summaryContent}
-      defaultIcon={birthdaySvg}
+      isEditing={isEditing}
+      initialData={initialData}
     >
       <Card>
         <div className='p-4'>

@@ -7,7 +7,8 @@ import {
   Link,
 } from "@shopify/polaris";
 interface WaysToEarnIconCardProps {
-  isActive: boolean;
+  isCustomIcon: boolean;
+  customIcon: string;
   summaryContent: React.ReactNode;
   onSelectChange: (value: string) => void;
   defaultIcon?: string;
@@ -16,11 +17,15 @@ interface WaysToEarnIconCardProps {
 }
 
 export function WaysToEarnIconCard({
+  isCustomIcon = false,
+  customIcon = "",
   onSelectChange,
   defaultIcon,
   CustomIconDescription,
   BottomDescription = null,
 }: WaysToEarnIconCardProps) {
+  // customIcon为pro功能，等待迭代
+
   // 渲染图片
   const renderDefaultIcon = () =>
     defaultIcon ? (
@@ -41,6 +46,7 @@ export function WaysToEarnIconCard({
           <ChoiceList
             title='Icon'
             titleHidden
+            selected={isCustomIcon ? ["custom"] : ["default"]}
             choices={[
               {
                 label: "Default",
@@ -53,7 +59,6 @@ export function WaysToEarnIconCard({
                 renderChildren: () => CustomIconDescription,
               },
             ]}
-            selected={["default"]}
             onChange={(selected) => onSelectChange(selected[0])}
           />
         </BlockStack>

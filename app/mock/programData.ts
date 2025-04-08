@@ -18,6 +18,12 @@ export interface WayToEarn {
   title: string;
   points: string;
   category?: string;
+  totalRewarded?: number;
+  active?: boolean;
+  customIcon?: string;
+  isCustomIcon?: boolean;
+  earningType?: string;
+  pointsValue?: string;
 }
 
 // 模拟数据
@@ -29,6 +35,11 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Place an order",
     points: "3 Points for every ¥1 spent",
     category: "ONLINE STORE",
+    active: false,
+    customIcon: "",
+    isCustomIcon: false,
+    earningType: "increments",
+    pointsValue: "3",
   },
   {
     id: 2,
@@ -37,6 +48,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Celebrate a birthday",
     points: "200 Points",
     category: "ONLINE STORE",
+    active: true,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 3,
@@ -45,6 +59,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Follow on TikTok",
     points: "50 Points",
     category: "SOCIAL",
+    active: false,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 4,
@@ -53,6 +70,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Signup",
     points: "200 Points",
     category: "ONLINE STORE",
+    active: true,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 5,
@@ -61,6 +81,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Share on X",
     points: "1 Point",
     category: "SOCIAL",
+    active: false,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 6,
@@ -69,6 +92,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Follow on X",
     points: "5 Points",
     category: "SOCIAL",
+    active: true,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 7,
@@ -77,6 +103,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Follow on Instagram",
     points: "10 Points",
     category: "SOCIAL",
+    active: false,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 8,
@@ -85,6 +114,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Like on Facebook",
     points: "5 Points",
     category: "SOCIAL",
+    active: true,
+    customIcon: "",
+    isCustomIcon: false,
   },
   {
     id: 9,
@@ -93,6 +125,9 @@ export const mockWaysToEarnData: WayToEarn[] = [
     title: "Share on Facebook",
     points: "10 Points",
     category: "SOCIAL",
+    active: true,
+    customIcon: "",
+    isCustomIcon: false,
   },
 ];
 

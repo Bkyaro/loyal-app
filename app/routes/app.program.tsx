@@ -38,9 +38,7 @@ export default function ProgramLayout() {
       <ProgramNavigation tabs={tabs} className='w-full' />
 
       {/* 内容区域 - 使用Outlet渲染子路由 */}
-      <Page>
-        <Outlet />
-      </Page>
+      <Outlet />
     </div>
   );
 }

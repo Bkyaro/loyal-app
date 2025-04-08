@@ -142,6 +142,7 @@ export default function AppProgram() {
                   {waysToEarn.slice(0, 5).map((way, index) => (
                     <div key={way.id} className=''>
                       <WayToEarnItem
+                        id={way.id}
                         icon={way.icon}
                         iconSvg={way.iconSvg}
                         title={way.title}
@@ -168,7 +169,13 @@ export default function AppProgram() {
 
   return (
     <div className='flex flex-col w-full'>
-      <Page>{isSubRoute() ? <Outlet /> : <PointsTab />}</Page>
+      {isSubRoute() ? (
+        <Outlet />
+      ) : (
+        <Page>
+          <PointsTab />
+        </Page>
+      )}
     </div>
   );
 }

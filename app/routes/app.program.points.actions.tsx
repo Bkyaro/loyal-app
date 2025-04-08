@@ -45,7 +45,12 @@ export default function ProgramActions() {
     const fetchData = () => {
       // 模拟API调用
       setTimeout(() => {
-        setActions(mockWaysToEarnData);
+        // Add totalRewarded property to each action
+        const actionsWithRewards = mockWaysToEarnData.map((action) => ({
+          ...action,
+          totalRewarded: Math.floor(Math.random() * 100), // Random number for demo
+        }));
+        setActions(actionsWithRewards);
         setLoading(false);
       }, 1000);
     };
@@ -72,9 +77,9 @@ export default function ProgramActions() {
   }
 
   // 检查是否正在访问子路由
-  const isSubRouteActive = window.location.pathname.includes(
-    "/app/program/points/actions/new",
-  );
+  const isSubRouteActive =
+    window.location.pathname.includes("/app/program/points/actions/") &&
+    window.location.pathname !== "/app/program/points/actions/";
 
   // 如果访问的是子路由，则渲染子路由的内容
   if (isSubRouteActive) {
@@ -116,16 +121,19 @@ export default function ProgramActions() {
         </Card>
       ) : (
         <Card padding='0'>
-          <div className='w-full'>
+          {/* todo: 全宽问题待解决 */}
+          <div className='w-[1200px]'>
             {actions.map((action, index) => (
               <div key={action.id}>
                 <WayToEarnItem
+                  active={action.active}
+                  id={action.id}
                   icon={action.icon}
                   iconSvg={action.iconSvg}
                   title={action.title}
                   points={action.points}
                   showDivider={index < actions.length - 1}
-                  onEdit={() => console.log(`编辑规则: ${action.title}`)}
+                  totalRewarded={action.totalRewarded || 0}
                 />
               </div>
             ))}
