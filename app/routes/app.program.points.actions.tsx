@@ -10,7 +10,7 @@ import {
   Link,
   Layout,
 } from "@shopify/polaris";
-import { useNavigate, useSearchParams } from "@remix-run/react";
+import { useNavigate, useSearchParams, Outlet } from "@remix-run/react";
 import { WayToEarnItem } from "~/components/ui/WayToEarnItem";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import programData from "~/mock/programData";
@@ -22,12 +22,19 @@ export default function ProgramActions() {
   const [loading, setLoading] = useState(true);
   const [actions, setActions] = useState<WayToEarn[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [usePathParams, setUsePathParams] = useState(false); // 默认使用查询参数路由
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   // 检查URL参数是否需要显示活动规则选择弹窗
   useEffect(() => {
     const shouldShowModal = searchParams.get("select_activity_rule") === "true";
+    // 检查是否应该使用路径参数
+    const routeType = searchParams.get("route_type");
+    if (routeType === "path") {
+      setUsePathParams(true);
+    }
+
     if (shouldShowModal) {
       setShowAddModal(true);
     }
@@ -57,14 +64,24 @@ export default function ProgramActions() {
   // 处理选择积分规则
   const handleSelectWay = (way: WayToEarn) => {
     console.log("Selected way to earn:", way);
+    // 如果点击的是我们没有实现的action类型，可以在这里做一些特殊处理
   };
 
   if (loading) {
     return <Loading />;
   }
 
-  // 如果没有积分兑换方式，显示空状态
+  // 检查是否正在访问子路由
+  const isSubRouteActive = window.location.pathname.includes(
+    "/app/program/points/actions/new",
+  );
 
+  // 如果访问的是子路由，则渲染子路由的内容
+  if (isSubRouteActive) {
+    return <Outlet />;
+  }
+
+  // 如果没有积分兑换方式，显示空状态
   return (
     <Page
       backAction={{
@@ -121,6 +138,7 @@ export default function ProgramActions() {
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSelect={handleSelectWay}
+        usePathParams={usePathParams}
       />
     </Page>
   );
