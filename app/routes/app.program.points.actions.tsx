@@ -5,7 +5,6 @@ import {
   Text,
   Button,
   BlockStack,
-  Modal,
   Loading,
   InlineStack,
   Link,
@@ -15,6 +14,7 @@ import { useNavigate, useSearchParams } from "@remix-run/react";
 import { WayToEarnItem } from "~/components/ui/WayToEarnItem";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import programData from "~/mock/programData";
+import { AddWaysToEarnModal } from "~/components/modals/AddWaysToEarnModal";
 
 const { emptySearchSvg } = programData;
 
@@ -52,6 +52,11 @@ export default function ProgramActions() {
 
   const handleAddWaysClick = () => {
     setShowAddModal(true);
+  };
+
+  // 处理选择积分规则
+  const handleSelectWay = (way: WayToEarn) => {
+    console.log("Selected way to earn:", way);
   };
 
   if (loading) {
@@ -111,74 +116,12 @@ export default function ProgramActions() {
         </Card>
       )}
 
-      {showAddModal && (
-        <AddWaysToEarnModal
-          open={showAddModal}
-          onClose={() => setShowAddModal(false)}
-        />
-      )}
+      {/* 使用新的共享模态组件 */}
+      <AddWaysToEarnModal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSelect={handleSelectWay}
+      />
     </Page>
-  );
-}
-
-// 添加积分兑换方式的模态窗口
-function AddWaysToEarnModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
-  // 按分类分组的数据
-  const groupedWays = mockWaysToEarnData.reduce(
-    (groups, way) => {
-      const category = way.category || "OTHER";
-      if (!groups[category]) {
-        groups[category] = [];
-      }
-      groups[category].push(way);
-      return groups;
-    },
-    {} as Record<string, WayToEarn[]>,
-  );
-
-  return (
-    <Modal open={open} onClose={onClose} title='Ways to earn'>
-      <div>
-        <BlockStack gap='400'>
-          {Object.entries(groupedWays).map(([category, ways]) => (
-            <div key={category}>
-              <div className='text-xs font-bold p-5 pb-2 '>{category}</div>
-              {ways.map((way) => (
-                <div
-                  key={way.id}
-                  className='py-2 cursor-pointer hover:bg-[#F4F6F8] border-b border-[#E0E0E0] last:border-b-0'
-                >
-                  <InlineStack blockAlign='center'>
-                    <div className='w-[40px] h-[40px] ml-5 py-2 flex items-center justify-center bg-[#fff] rounded-sm border border-[#E0E0E0]'>
-                      {way.iconSvg ? (
-                        <img
-                          src={way.iconSvg}
-                          alt={way.title}
-                          className='w-[24px] h-[24px]'
-                        />
-                      ) : (
-                        way.icon
-                      )}
-                    </div>
-                    <p className='ml-4 h-full'>{way.title}</p>
-                  </InlineStack>
-                </div>
-              ))}
-            </div>
-          ))}
-        </BlockStack>
-      </div>
-      <Modal.Section>
-        <InlineStack align='end'>
-          <Button onClick={onClose}>Cancel</Button>
-        </InlineStack>
-      </Modal.Section>
-    </Modal>
   );
 }

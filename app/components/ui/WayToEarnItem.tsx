@@ -26,7 +26,7 @@ export function WayToEarnItem({
 }: WayToEarnItemProps) {
   return (
     <>
-      <div className='p-4 pt-0'>
+      <div className='p-4'>
         <InlineStack align='space-between'>
           <InlineStack gap='400'>
             <div className='w-[40px] h-[40px] rounded-sm flex items-center justify-center bg-[#F4F6F8] border border-[#E0E0E0]'>
