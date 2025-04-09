@@ -15,8 +15,8 @@ import {
   ButtonGroup,
 } from "@shopify/polaris";
 import { useNavigate } from "@remix-run/react";
-import { WaysToEarnSummaryCard } from "../sections/WaysToEarnSummaryCard";
-import { WaysToEarnIconCard } from "../sections/WaysToEarnIconCard";
+import { WaysToEarnSummaryCard } from "./WaysToEarnSummaryCard";
+import { WaysToEarnIconCard } from "./WaysToEarnIconCard";
 import { WayToEarn } from "~/mock/programData";
 export interface ActionFormProps {
   title: string;

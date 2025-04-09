@@ -7,8 +7,8 @@ import {
   InlineStack,
   List,
 } from "@shopify/polaris";
-import { ActionForm } from "~/components/ui/ActionForm";
-import { ActionSummary } from "~/components/ui/ActionSummary";
+import { ActionForm } from "~/components/sections/ActionForm";
+import { ActionSummary } from "~/components/sections/ActionSummary";
 import { useNavigate } from "@remix-run/react";
 import { WayToEarn } from "~/mock/programData";
 

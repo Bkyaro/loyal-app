@@ -11,9 +11,9 @@ import {
   Badge,
   Loading,
 } from "@shopify/polaris";
-import { WayToEarnItem } from "~/components/ui/WayToEarnItem";
+import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
 import { useNavigate, useLocation, Outlet } from "@remix-run/react";
-import { ProgramNavigation } from "~/components/ui/ProgramNavigation";
+import { ProgramNavigation } from "~/components/sections/ProgramNavigation";
 import { AddWaysToEarnModal } from "~/components/modals/AddWaysToEarnModal";
 
 // 导入模拟数据

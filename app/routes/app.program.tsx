@@ -1,6 +1,6 @@
 import { Outlet } from "@remix-run/react";
 import { Page } from "@shopify/polaris";
-import { ProgramNavigation } from "~/components/ui/ProgramNavigation";
+import { ProgramNavigation } from "~/components/sections/ProgramNavigation";
 
 export default function ProgramLayout() {
   // 定义所有导航标签

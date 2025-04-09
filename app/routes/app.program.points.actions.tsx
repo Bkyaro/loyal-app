@@ -11,7 +11,7 @@ import {
   Layout,
 } from "@shopify/polaris";
 import { useNavigate, useSearchParams, Outlet } from "@remix-run/react";
-import { WayToEarnItem } from "~/components/ui/WayToEarnItem";
+import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import programData from "~/mock/programData";
 import { AddWaysToEarnModal } from "~/components/modals/AddWaysToEarnModal";
