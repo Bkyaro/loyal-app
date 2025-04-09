@@ -149,7 +149,7 @@ export function PlaceOrderAction({
                         value={pointsValue.toString()}
                         onChange={(value) => setPointsValue(Number(value))}
                         autoComplete='off'
-                        type='number'
+                        type='integer'
                         min={1}
                         suffix={pointsValue > 1 ? "points" : "point"}
                       />

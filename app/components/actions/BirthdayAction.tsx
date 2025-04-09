@@ -104,7 +104,7 @@ export function BirthdayAction({
                   min={1}
                   onChange={(value) => setPoints(Number(value))}
                   autoComplete='off'
-                  type='number'
+                  type='integer'
                   suffix={points > 1 ? "points" : "point"}
                 />
               </div>

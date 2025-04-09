@@ -97,7 +97,7 @@ export function SignupAction({
                   value={points.toString()}
                   onChange={(value) => setPoints(Number(value))}
                   autoComplete='off'
-                  type='number'
+                  type='integer'
                   suffix={points > 1 ? "points" : "point"}
                   min={1}
                 />
