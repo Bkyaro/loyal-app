@@ -7,7 +7,7 @@ import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import { Loading } from "@shopify/polaris";
 // Action type mapping based on action title
 const actionTypeMap: Record<string, string> = {
-  "Signup": "signup",
+  Signup: "signup",
   "Celebrate a birthday": "birthday",
   "Place an order": "order",
 };
@@ -70,19 +70,17 @@ export default function EditAction() {
   };
 
   const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this action?")) {
-      console.log("Deleting action:", id);
+    console.log("Deleting action:", id);
 
-      // In a real app, this would be an API call to delete the action
-      // 例如：
-      // API.deleteAction(id)
-      //   .then(() => navigate("/app/program/points/actions"))
-      //   .catch(error => console.error("Failed to delete action:", error));
+    // In a real app, this would be an API call to delete the action
+    // 例如：
+    // API.deleteAction(id)
+    //   .then(() => navigate("/app/program/points/actions"))
+    //   .catch(error => console.error("Failed to delete action:", error));
 
-      setTimeout(() => {
-        navigate("/app/program/points/actions");
-      }, 500);
-    }
+    setTimeout(() => {
+      navigate("/app/program/points/actions");
+    }, 500);
   };
 
   // Render loading skeleton while fetching data

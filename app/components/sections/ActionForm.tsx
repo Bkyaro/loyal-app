@@ -65,6 +65,10 @@ export function ActionForm({
   // 添加状态控制确认对话框
   const [showConfirmDialog, setShowConfirmDialog] = useState<boolean>(false);
 
+  // 添加状态控制删除确认对话框
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] =
+    useState<boolean>(false);
+
   const navigate = useNavigate();
 
   // 处理状态变更
@@ -128,6 +132,24 @@ export function ActionForm({
     setShowConfirmDialog(false);
   };
 
+  // 处理删除按钮点击
+  const handleDeleteClick = () => {
+    setShowDeleteConfirmDialog(true);
+  };
+
+  // 确认删除
+  const handleConfirmDelete = () => {
+    setShowDeleteConfirmDialog(false);
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
+  // 取消删除
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmDialog(false);
+  };
+
   return (
     <>
       <Page
@@ -183,14 +205,14 @@ export function ActionForm({
         {/* 如果是编辑页面，则显示删除按钮 */}
         {isEditing && onDelete && (
           <div className='mt-4 flex justify-end'>
-            <Button tone='critical' size='large' onClick={onDelete}>
+            <Button tone='critical' size='large' onClick={handleDeleteClick}>
               Delete
             </Button>
           </div>
         )}
       </Page>
 
-      {/* 确认对话框 */}
+      {/* 未保存更改确认对话框 */}
       <ConfirmationDialog
         open={showConfirmDialog}
         title='Unsaved changes'
@@ -199,6 +221,18 @@ export function ActionForm({
         cancelText='Cancel'
         onConfirm={handleConfirmDiscard}
         onCancel={handleCancelDiscard}
+        destructive={true}
+      />
+
+      {/* 删除确认对话框 */}
+      <ConfirmationDialog
+        open={showDeleteConfirmDialog}
+        title={`Delete ${title}?`}
+        message={`Are you sure you want to delete ${title}? This action cannot be reversed.`}
+        confirmText='Delete action'
+        cancelText='Cancel'
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
         destructive={true}
       />
     </>
