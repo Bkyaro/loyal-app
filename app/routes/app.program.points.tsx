@@ -123,7 +123,7 @@ export default function AppProgram() {
                     <Text variant='headingMd' as='h3'>
                       Ways to earn
                     </Text>
-                    <Link onClick={handleViewAllClick}>
+                    <Link onClick={handleViewAllClick} removeUnderline>
                       View all ways to earn
                     </Link>
                   </div>

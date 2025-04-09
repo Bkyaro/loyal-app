@@ -113,7 +113,7 @@ export default function ProgramActions() {
               No actions found
             </Text>
             <div className='mt-4'>
-              <Link url='#' onClick={() => setShowAddModal(true)}>
+              <Link url='#' onClick={() => setShowAddModal(true)} removeUnderline>
                 Add an action
               </Link>{" "}
               so your customers can start earning points.
