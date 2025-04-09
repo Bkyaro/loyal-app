@@ -97,6 +97,7 @@ export default function AppProgram() {
                     onClick={() => {
                       console.log("跳转说明页");
                     }}
+                    removeUnderline
                   >
                     how customers earn points
                   </Link>
