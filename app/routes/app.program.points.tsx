@@ -10,11 +10,14 @@ import {
   Link,
   Badge,
   Loading,
+  Divider,
 } from "@shopify/polaris";
 import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
 import { useNavigate, useLocation, Outlet } from "@remix-run/react";
 import { ProgramNavigation } from "~/components/sections/ProgramNavigation";
 import { AddWaysToEarnModal } from "~/components/modals/AddWaysToEarnModal";
+import { actionPointRule } from "~/components/tools";
+import { PointsConfigListItem } from "~/components/sections/PointsConfigListItem";
 
 // 导入模拟数据
 import programData, { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
@@ -44,7 +47,7 @@ export default function AppProgram() {
         // 模拟API调用
         setTimeout(() => {
           // 取消注释下面一行以模拟空状态
-          return setLoading(false);
+          // return setLoading(false);
 
           setWaysToEarn(mockWaysToEarnData);
           setLoading(false);
@@ -124,8 +127,6 @@ export default function AppProgram() {
                       View all ways to earn
                     </Link>
                   </div>
-                  <div className='w-full h-[1px] bg-[#E0E0E0]'></div>
-
                   {(!waysToEarn || !waysToEarn?.length) && (
                     <div className='flex justify-between p-4 pt-0'>
                       <div className='text-sm text-[#637381]'>
@@ -139,17 +140,20 @@ export default function AppProgram() {
                     </div>
                   )}
 
+                  {/* todo: 后续考虑分页 */}
                   {waysToEarn.slice(0, 5).map((way, index) => (
-                    <div key={way.id} className=''>
-                      <WayToEarnItem
+                    <>
+                      <PointsConfigListItem
+                        active={way.active}
                         id={way.id}
                         icon={way.icon}
                         iconSvg={way.iconSvg}
                         title={way.title}
                         points={way.points}
-                        showDivider={index < Math.min(waysToEarn.length, 5) - 1}
+                        description={actionPointRule(way.type, way.points)}
                       />
-                    </div>
+                      <Divider />
+                    </>
                   ))}
                 </BlockStack>
               </div>

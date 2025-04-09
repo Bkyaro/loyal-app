@@ -38,7 +38,10 @@ export function ProgramNavigation({
   );
 
   const handleTabClick = (path: string) => {
-    navigate(path);
+    // 如果已在点击的路径中，则不执行导航
+    if (!isActive(path)) {
+      navigate(path);
+    }
   };
 
   return (
