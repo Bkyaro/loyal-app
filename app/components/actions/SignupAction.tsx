@@ -25,7 +25,15 @@ export function SignupAction({
   onSave,
   onDelete,
 }: SignupActionProps) {
-  const [points, setPoints] = useState<number>(initialData?.points || 200);
+  // 默认值
+  const defaultPoints = initialData?.points || 200;
+
+  // 状态
+  const [points, setPoints] = useState<number>(defaultPoints);
+
+  // 当前表单数据和初始表单数据
+  const formData = { points };
+  const initialFormData = { points: defaultPoints };
 
   const navigate = useNavigate();
 
@@ -69,6 +77,8 @@ export function SignupAction({
       summaryContent={summaryContent}
       isEditing={isEditing}
       initialData={initialData}
+      formData={formData}
+      initialFormData={initialFormData}
     >
       <Card>
         <div className='p-4'>

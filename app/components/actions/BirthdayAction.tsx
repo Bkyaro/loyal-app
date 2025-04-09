@@ -25,9 +25,16 @@ export function BirthdayAction({
   onSave,
   onDelete,
 }: BirthdayActionProps) {
-  const [points, setPoints] = useState<number>(
-    initialData ? initialData.points : 200,
-  );
+  // 默认值
+  const defaultPoints = initialData ? initialData.points : 200;
+
+  // 状态
+  const [points, setPoints] = useState<number>(defaultPoints);
+
+  // 当前表单数据和初始表单数据
+  const formData = { points };
+  const initialFormData = { points: defaultPoints };
+
   const navigate = useNavigate();
 
   const handleBackClick = () => {
@@ -76,6 +83,8 @@ export function BirthdayAction({
       summaryContent={summaryContent}
       isEditing={isEditing}
       initialData={initialData}
+      formData={formData}
+      initialFormData={initialFormData}
     >
       <Card padding='0'>
         <div className='p-4'>

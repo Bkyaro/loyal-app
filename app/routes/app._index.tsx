@@ -53,6 +53,9 @@ interface Product {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  // blocking
+  return null;
+
   const { admin, session } = await authenticate.admin(request);
   const shop = session.shop;
 
@@ -441,6 +444,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
+  // blocking
+  return <>首页</>;
+
   const { products, shop } = useLoaderData<{
     products: Product[];
     shop: string;

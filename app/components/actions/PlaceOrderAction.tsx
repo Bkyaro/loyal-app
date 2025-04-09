@@ -26,15 +26,22 @@ export function PlaceOrderAction({
   onSave,
   onDelete,
 }: PlaceOrderActionProps) {
+  // 默认值
+  const defaultEarningType = initialData?.earningType || "increments";
+  const defaultPointsValue = initialData?.points || 200;
+
   // 下单获取积分类型：increments = 按订单金额获取比例积分；fixed = 固定积分
-  const [earningType, setEarningType] = useState<string>(
-    initialData?.earningType || "increments",
-  );
+  const [earningType, setEarningType] = useState<string>(defaultEarningType);
 
   // 下单获取积分值
-  const [pointsValue, setPointsValue] = useState<number>(
-    initialData?.points || 200,
-  );
+  const [pointsValue, setPointsValue] = useState<number>(defaultPointsValue);
+
+  // 当前表单数据和初始表单数据
+  const formData = { earningType, pointsValue };
+  const initialFormData = {
+    earningType: defaultEarningType,
+    pointsValue: defaultPointsValue,
+  };
 
   const navigate = useNavigate();
 
@@ -90,6 +97,8 @@ export function PlaceOrderAction({
         summaryContent={summaryContent}
         isEditing={isEditing}
         initialData={initialData}
+        formData={formData}
+        initialFormData={initialFormData}
       >
         <Card padding='0'>
           <div className='p-4'>
