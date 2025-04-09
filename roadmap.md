@@ -8,6 +8,7 @@
 - 样式调整
 - Mock数据重构为localhost模拟
 - Save/Delete交互数据整合
+- 路由跳转抖动修复
 
 ### 积分消耗配置
 
