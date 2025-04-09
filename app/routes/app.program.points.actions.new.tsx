@@ -3,8 +3,7 @@ import { useSearchParams, useNavigate } from "@remix-run/react";
 import { SignupAction } from "~/components/actions/SignupAction";
 import { BirthdayAction } from "~/components/actions/BirthdayAction";
 import { PlaceOrderAction } from "~/components/actions/PlaceOrderAction";
-import { Layout, Spinner } from "@shopify/polaris";
-import { Page } from "@shopify/polaris";
+import { Loading } from "@shopify/polaris";
 
 // Define action types as an enum
 enum ActionType {
@@ -37,23 +36,41 @@ export default function NewAction() {
     return () => clearTimeout(timer);
   }, [searchParams, navigate]);
 
+  // 处理创建action
+  const handleCreateAction = (actionData: any) => {
+    console.log("Creating action:", {
+      type: actionType,
+      ...actionData,
+    });
+
+    // 在实际应用中，这将是一个API调用来创建action
+    // 例如：
+    // API.createAction({
+    //   type: actionType,
+    //   ...actionData
+    // })
+    //   .then(() => navigate("/app/program/points/actions"))
+    //   .catch(error => console.error("Failed to create action:", error));
+
+    // 模拟API调用
+    setTimeout(() => {
+      navigate("/app/program/points/actions");
+    }, 500);
+  };
+
   // Render the appropriate component based on action type
   const renderActionComponent = () => {
     if (loading) {
-      return (
-        <div className='flex justify-center items-center p-8'>
-          <Spinner size='large' />
-        </div>
-      );
+      return <Loading />;
     }
 
     switch (actionType) {
       case ActionType.SIGNUP:
-        return <SignupAction />;
+        return <SignupAction onSave={handleCreateAction} />;
       case ActionType.BIRTHDAY:
-        return <BirthdayAction />;
+        return <BirthdayAction onSave={handleCreateAction} />;
       case ActionType.PLACE_ORDER:
-        return <PlaceOrderAction />;
+        return <PlaceOrderAction onSave={handleCreateAction} />;
       default:
         navigate("/app/program/points/actions");
         return null;

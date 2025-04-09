@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Page,
   Card,
@@ -26,7 +26,7 @@ export interface ActionFormProps {
   };
   children?: ReactNode;
   summaryContent?: ReactNode;
-  onPrimaryAction?: () => void;
+  onPrimaryAction?: (data: { active: boolean }) => void;
   onDelete?: () => void;
   isEditing?: boolean;
   defaultIcon?: string;
@@ -47,18 +47,30 @@ export function ActionForm({
   defaultIcon,
   initialData,
 }: ActionFormProps) {
-  const {
-    active = false,
-    isCustomIcon = false,
-    customIcon = "",
-  } = initialData || {};
+  // 获取初始active状态，如果没有提供，则默认为false
+  const initialActive = initialData?.active || false;
+
+  // 添加状态跟踪当前active状态
+  const [isActive, setIsActive] = useState<boolean>(initialActive);
+
+  // 处理状态变更
+  const handleStatusChange = (status: "active" | "disabled") => {
+    const newActive = status === "active";
+    setIsActive(newActive);
+  };
+
+  // 处理主要操作（保存/创建），包括当前active状态
+  const handlePrimaryAction = () => {
+    onPrimaryAction({ active: isActive });
+  };
+
   return (
     <Page
       backAction={backAction}
       title={title}
       primaryAction={{
         content: isEditing ? "Save" : "Create",
-        onAction: onPrimaryAction,
+        onAction: handlePrimaryAction,
       }}
       fullWidth
     >
@@ -69,11 +81,9 @@ export function ActionForm({
         <div className='w-1/3'>
           {/* Summary板块 */}
           <WaysToEarnSummaryCard
-            isActive={active}
+            isActive={isActive}
             summaryContent={summaryContent}
-            onStatusChange={(status) => {
-              console.log("status changed", status);
-            }}
+            onStatusChange={handleStatusChange}
           />
           {/* 入口icon图片配置，本期不上 */}
           {/* <div className='mt-4'>

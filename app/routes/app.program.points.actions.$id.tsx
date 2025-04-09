@@ -48,10 +48,22 @@ export default function EditAction() {
   }, [id, navigate]);
 
   const handleSave = (updatedData: any) => {
-    console.log("Saving action:", { id, ...updatedData });
+    // 确保更新数据包含active状态
+    // 这里我们使用扩展运算符合并原始数据和更新的数据
+    const dataToSave = {
+      ...actionData,
+      ...updatedData,
+    };
 
-    // In a real app, this would be an API call to update the action
-    // For now, we'll just navigate back to the list
+    console.log("Saving action:", dataToSave);
+
+    // 在实际应用中，这将是一个API调用来更新action
+    // 例如：
+    // API.updateAction(id, dataToSave)
+    //   .then(() => navigate("/app/program/points/actions"))
+    //   .catch(error => console.error("Failed to update action:", error));
+
+    // 模拟API调用的延迟
     setTimeout(() => {
       navigate("/app/program/points/actions");
     }, 500);
@@ -62,7 +74,11 @@ export default function EditAction() {
       console.log("Deleting action:", id);
 
       // In a real app, this would be an API call to delete the action
-      // For now, we'll just navigate back to the list
+      // 例如：
+      // API.deleteAction(id)
+      //   .then(() => navigate("/app/program/points/actions"))
+      //   .catch(error => console.error("Failed to delete action:", error));
+
       setTimeout(() => {
         navigate("/app/program/points/actions");
       }, 500);

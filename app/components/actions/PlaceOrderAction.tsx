@@ -42,10 +42,12 @@ export function PlaceOrderAction({
     navigate("/app/program/points/actions");
   };
 
-  const handleAction = () => {
+  const handleAction = (formData: { active: boolean }) => {
+    // 合并表单数据与组件内部状态
     const data = {
       earningType,
       pointsValue,
+      active: formData.active,
     };
 
     // 编辑页/创建页调用不同api

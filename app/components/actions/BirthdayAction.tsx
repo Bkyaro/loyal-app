@@ -34,8 +34,12 @@ export function BirthdayAction({
     navigate("/app/program/points/actions");
   };
 
-  const handleAction = () => {
-    const data = { points };
+  const handleAction = (formData: { active: boolean }) => {
+    // 合并表单数据与组件内部状态
+    const data = {
+      points,
+      active: formData.active,
+    };
 
     // 编辑页/创建页调用不同api
     if (isEditing && onSave) {
