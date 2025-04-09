@@ -42,10 +42,10 @@ export function WayToEarnItem({
   return (
     <>
       <div
-        className='w-full p-4 cursor-pointer hover:bg-[#F6F6F6] flex'
+        className='w-full p-4 cursor-pointer hover:bg-[#F6F6F6] flex items-center'
         onClick={handleEdit}
       >
-        <div className='flex w-[40px] h-[40px] rounded-sm items-center justify-center bg-[#fff] border border-[#E0E0E0] mr-4'>
+        <div className='shrink-0 flex w-[40px] h-[40px] rounded-sm items-center justify-center bg-[#fff] border border-[#E0E0E0] mr-4'>
           {iconSvg ? (
             <img src={iconSvg} alt={title} className='w-[24px] h-[24px]' />
           ) : (

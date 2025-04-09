@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  
+
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./app/routes/**/*.{js,jsx,ts,tsx}",
@@ -10,6 +10,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        slim: { raw: "(max-width: 391px)" },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

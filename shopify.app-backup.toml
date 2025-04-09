@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "b32f5aabcf5f65e751d4049d4da00a2f"
-application_url = "https://sk1b35pb-3000.euw.devtunnels.ms"
+application_url = "https://kind-only-newt.ngrok-free.app"
 embedded = true
 name = "loyalol"
 handle = "loyalol"
@@ -23,9 +23,9 @@ scopes = "write_products, read_products, write_discounts"
 
 [auth]
 redirect_urls = [
-  "https://sk1b35pb-3000.euw.devtunnels.ms/auth/callback",
-  "https://sk1b35pb-3000.euw.devtunnels.ms/auth/shopify/callback",
-  "https://sk1b35pb-3000.euw.devtunnels.ms/api/auth/callback"
+  "https://kind-only-newt.ngrok-free.app/auth/callback",
+  "https://kind-only-newt.ngrok-free.app/auth/shopify/callback",
+  "https://kind-only-newt.ngrok-free.app/api/auth/callback"
 ]
 
 [pos]

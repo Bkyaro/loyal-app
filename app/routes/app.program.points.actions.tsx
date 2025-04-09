@@ -121,8 +121,7 @@ export default function ProgramActions() {
         </Card>
       ) : (
         <Card padding='0'>
-          {/* todo: 全宽问题待解决 */}
-          <div className='w-[1200px]'>
+          <div className='w-[80vw] slim:w-[100vw]'>
             {actions.map((action, index) => (
               <div key={action.id}>
                 <WayToEarnItem
