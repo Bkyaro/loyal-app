@@ -75,7 +75,8 @@ export function ActionForm({
               console.log("status changed", status);
             }}
           />
-          <div className='mt-4'>
+          {/* 入口icon图片配置，本期不上 */}
+          {/* <div className='mt-4'>
             <WaysToEarnIconCard
               isCustomIcon={isCustomIcon}
               customIcon={customIcon}
@@ -97,7 +98,7 @@ export function ActionForm({
                 </Text>
               }
             />
-          </div>
+          </div> */}
         </div>
       </div>
       {/* 如果是编辑页面，则显示删除按钮 */}

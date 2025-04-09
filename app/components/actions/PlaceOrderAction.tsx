@@ -26,12 +26,16 @@ export function PlaceOrderAction({
   onSave,
   onDelete,
 }: PlaceOrderActionProps) {
+  // 下单获取积分类型：increments = 按订单金额获取比例积分；fixed = 固定积分
   const [earningType, setEarningType] = useState<string>(
     initialData?.earningType || "increments",
   );
-  const [pointsValue, setPointsValue] = useState<string>(
-    initialData?.points || "200",
+
+  // 下单获取积分值
+  const [pointsValue, setPointsValue] = useState<number>(
+    initialData?.points || 200,
   );
+
   const navigate = useNavigate();
 
   const handleBackClick = () => {
@@ -67,6 +71,10 @@ export function PlaceOrderAction({
     />
   );
 
+  useEffect(() => {
+    console.log("pointsValue", pointsValue);
+  }, [pointsValue]);
+
   return (
     <>
       <ActionForm
@@ -81,7 +89,7 @@ export function PlaceOrderAction({
         isEditing={isEditing}
         initialData={initialData}
       >
-        <Card>
+        <Card padding='0'>
           <div className='p-4'>
             <BlockStack gap='400'>
               <Text variant='headingMd' as='h2'>
@@ -110,45 +118,50 @@ export function PlaceOrderAction({
         </Card>
 
         <div className='mt-4'>
-          <Card>
-            <div className='p-4'>
+          <Card padding='0'>
+            <div>
               <BlockStack gap='400'>
-                <Text variant='headingMd' as='h2'>
-                  Earning value
-                </Text>
-                <div>
-                  <Text variant='bodyMd' as='p'>
-                    {earningType === "increments"
-                      ? "Points earned for every ¥1 spent"
-                      : "Points awarded"}
+                <div className='p-4'>
+                  <Text variant='headingMd' as='h2'>
+                    Earning value
                   </Text>
-                  <div className='mt-2'>
-                    <TextField
-                      label='Points'
-                      labelHidden
-                      value={pointsValue}
-                      onChange={setPointsValue}
-                      autoComplete='off'
-                      type='number'
-                      suffix={earningType === "increments" ? "point" : "points"}
-                    />
+                  <div>
+                    <Text variant='bodyMd' as='p'>
+                      {earningType === "increments"
+                        ? "Points earned for every ¥1 spent"
+                        : "Points awarded"}
+                    </Text>
+                    <div className='mt-2'>
+                      <TextField
+                        label='Points'
+                        labelHidden
+                        value={pointsValue.toString()}
+                        onChange={(value) => setPointsValue(Number(value))}
+                        autoComplete='off'
+                        type='number'
+                        min={1}
+                        suffix={pointsValue > 1 ? "points" : "point"}
+                      />
+                    </div>
                   </div>
                 </div>
-                {earningType === "increments" && (
-                  <div className='text-sm bg-[#FAFBFB]'>
+                {/* 高级版功能限制banner */}
+                {/* {earningType === "increments" && (
+                  <div className='text-sm bg-[#FAFBFB] p-4'>
                     Limit the number of times each customer can earn points for
                     this action.
                     <a href='#' className='text-[#006FBB] ml-1'>
                       Upgrade now →
                     </a>
                   </div>
-                )}
+                )} */}
               </BlockStack>
             </div>
           </Card>
         </div>
 
-        <div className='mt-4'>
+        {/* 顾客条件板块 */}
+        {/* <div className='mt-4'>
           <Card>
             <div className='p-4'>
               <BlockStack gap='400'>
@@ -173,9 +186,10 @@ export function PlaceOrderAction({
               </BlockStack>
             </div>
           </Card>
-        </div>
+        </div> */}
 
-        <div className='mt-4'>
+        {/* 排除参与积分获取的产品板块 - 仅比例积分类型可配置 */}
+        {/* <div className='mt-4'>
           <Card>
             <div className='p-4'>
               <BlockStack gap='400'>
@@ -198,7 +212,7 @@ export function PlaceOrderAction({
               </BlockStack>
             </div>
           </Card>
-        </div>
+        </div> */}
       </ActionForm>
     </>
   );

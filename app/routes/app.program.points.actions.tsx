@@ -86,6 +86,17 @@ export default function ProgramActions() {
     return <Outlet />;
   }
 
+  // 配置点数展示
+  const actionPointRule = (type: number, point: number) => {
+    if (type === 1) {
+      return `${point} ${point > 1 ? "points" : "point"} for every ¥1 spent`;
+    } else if (type === 2 || type === 3) {
+      return `${point} ${point > 1 ? "points" : "point"}`;
+    } else {
+      return `-`;
+    }
+  };
+
   // 如果没有积分兑换方式，显示空状态
   return (
     <Page
@@ -133,6 +144,7 @@ export default function ProgramActions() {
                   points={action.points}
                   showDivider={index < actions.length - 1}
                   totalRewarded={action.totalRewarded || 0}
+                  description={actionPointRule(action.type, action.points)}
                 />
               </div>
             ))}

@@ -25,8 +25,8 @@ export function BirthdayAction({
   onSave,
   onDelete,
 }: BirthdayActionProps) {
-  const [points, setPoints] = useState<string>(
-    initialData ? initialData.points : "200",
+  const [points, setPoints] = useState<number>(
+    initialData ? initialData.points : 200,
   );
   const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ export function BirthdayAction({
       isEditing={isEditing}
       initialData={initialData}
     >
-      <Card>
+      <Card padding='0'>
         <div className='p-4'>
           <BlockStack gap='400'>
             <Text variant='headingMd' as='h2'>
@@ -87,11 +87,12 @@ export function BirthdayAction({
                 <TextField
                   label='Points'
                   labelHidden
-                  value={points}
-                  onChange={setPoints}
+                  value={points.toString()}
+                  min={1}
+                  onChange={(value) => setPoints(Number(value))}
                   autoComplete='off'
                   type='number'
-                  suffix='points'
+                  suffix={points > 1 ? "points" : "point"}
                 />
               </div>
             </div>
@@ -99,7 +100,7 @@ export function BirthdayAction({
         </div>
       </Card>
 
-      <div className='mt-4'>
+      {/* <div className='mt-4'>
         <Card>
           <div className='p-4'>
             <BlockStack gap='400'>
@@ -147,7 +148,7 @@ export function BirthdayAction({
             </BlockStack>
           </div>
         </Card>
-      </div>
+      </div> */}
     </ActionForm>
   );
 }

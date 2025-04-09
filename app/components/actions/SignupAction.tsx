@@ -25,7 +25,7 @@ export function SignupAction({
   onSave,
   onDelete,
 }: SignupActionProps) {
-  const [points, setPoints] = useState<string>(initialData?.points || "200");
+  const [points, setPoints] = useState<number>(initialData?.points || 200);
 
   const navigate = useNavigate();
 
@@ -80,18 +80,19 @@ export function SignupAction({
                 <TextField
                   label='Points'
                   labelHidden
-                  value={points}
-                  onChange={setPoints}
+                  value={points.toString()}
+                  onChange={(value) => setPoints(Number(value))}
                   autoComplete='off'
                   type='number'
-                  suffix='points'
+                  suffix={points > 1 ? "points" : "point"}
+                  min={1}
                 />
               </div>
             </div>
           </BlockStack>
         </div>
       </Card>
-      <div className='mt-4'>
+      {/* <div className='mt-4'>
         <Card>
           <div className='p-4'>
             <BlockStack gap='400'>
@@ -116,7 +117,7 @@ export function SignupAction({
             </BlockStack>
           </div>
         </Card>
-      </div>
+      </div> */}
     </ActionForm>
   );
 }

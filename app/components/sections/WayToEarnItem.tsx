@@ -14,11 +14,12 @@ interface WayToEarnItemProps {
   icon: string;
   iconSvg?: string;
   title: string;
-  points: string;
+  points: number;
   onEdit?: () => void;
   showDivider?: boolean;
   totalRewarded?: number;
   active?: boolean;
+  description: string;
 }
 
 export function WayToEarnItem({
@@ -31,6 +32,7 @@ export function WayToEarnItem({
   showDivider = true,
   totalRewarded = 0,
   active = false,
+  description,
 }: WayToEarnItemProps) {
   const navigate = useNavigate();
 
@@ -61,7 +63,10 @@ export function WayToEarnItem({
               <Badge tone='info'>Disabled</Badge>
             )}
           </div>
-          <p className='text-sm text-gray-500 basis-[35%]'>{points}</p>
+          {/* 兑换描述 */}
+          <p className='text-sm text-gray-500 basis-[35%]'>
+            {description && `${description}`}
+          </p>
           <p className='text-base text-gray-500 basis-[20%]'>
             {totalRewarded} rewarded
           </p>
