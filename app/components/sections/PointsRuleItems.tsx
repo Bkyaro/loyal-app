@@ -9,7 +9,8 @@ import {
 } from "@shopify/polaris";
 import { useNavigate } from "@remix-run/react";
 
-interface WayToEarnItemProps {
+interface PointsRuleItemProps {
+  mode: "earn" | "redeem";
   id: number;
   isCustomIcon: boolean;
   customIcon?: string;
@@ -21,9 +22,11 @@ interface WayToEarnItemProps {
   totalRewarded?: number;
   active?: boolean;
   description: string;
+  cost?: string;
 }
 
-export function WayToEarnItem({
+export function PointsRuleItem({
+  mode,
   id,
   isCustomIcon,
   customIcon,
@@ -35,12 +38,17 @@ export function WayToEarnItem({
   totalRewarded = 0,
   active = false,
   description,
-}: WayToEarnItemProps) {
+  cost,
+}: PointsRuleItemProps) {
   const navigate = useNavigate();
 
   const handleEdit = () => {
     // 点击跳转编辑页
-    navigate(`/app/program/points/actions/${id}`);
+    if (mode === "earn") {
+      navigate(`/app/program/points/actions/${id}`);
+    } else {
+      navigate(`/app/program/points/rewards/${id}`);
+    }
   };
 
   return (
@@ -57,7 +65,7 @@ export function WayToEarnItem({
           />
         </div>
         <div className='flex justify-between items-center flex-1'>
-          <p className='font-semibold text-base basis-[30%]'>{title}</p>
+          <p className='font-semibold text-base basis-[35%]'>{title}</p>
           <div className='basis-[15%]'>
             {active ? (
               <Badge tone='success'>Active</Badge>
@@ -66,9 +74,14 @@ export function WayToEarnItem({
             )}
           </div>
           {/* 兑换描述 */}
-          <p className='text-sm text-gray-500 basis-[35%]'>
+          <p className='text-sm text-gray-500 basis-[30%]'>
             {description && `${description}`}
           </p>
+          {mode === "redeem" && (
+            <p className='text-sm text-gray-500 basis-[20%]'>
+              {cost && `${cost}`}
+            </p>
+          )}
           <p className='text-base text-gray-500 basis-[20%]'>
             {totalRewarded} rewarded
           </p>

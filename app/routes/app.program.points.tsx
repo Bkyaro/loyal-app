@@ -12,9 +12,7 @@ import {
   Loading,
   Divider,
 } from "@shopify/polaris";
-import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
 import { useNavigate, useLocation, Outlet } from "@remix-run/react";
-import { ProgramNavigation } from "~/components/sections/ProgramNavigation";
 import { AddPointsRuleModal } from "~/components/modals/AddPointsRuleModal";
 import {
   actionPointRule,
@@ -30,7 +28,6 @@ import programData, {
   WayToRedeem,
   mockWaysToRedeemData,
 } from "~/mock/programData";
-const { emptySearchSvg } = programData;
 
 export default function AppProgram() {
   const navigate = useNavigate();

@@ -11,7 +11,7 @@ import {
   Layout,
 } from "@shopify/polaris";
 import { useNavigate, useSearchParams, Outlet } from "@remix-run/react";
-import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
+import { PointsRuleItem } from "~/components/sections/PointsRuleItems";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import programData from "~/mock/programData";
 import { AddPointsRuleModal } from "~/components/modals/AddPointsRuleModal";
@@ -129,7 +129,8 @@ export default function ProgramActions() {
           <div className='w-[80vw] slim:w-[100vw]'>
             {actions.map((action, index) => (
               <div key={action.id}>
-                <WayToEarnItem
+                <PointsRuleItem
+                  mode='earn'
                   active={action.active}
                   id={action.id}
                   isCustomIcon={action.isCustomIcon}
