@@ -444,8 +444,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  // blocking
-  return <>首页</>;
+  const shopify = useAppBridge();
+  console.log("shopify", shopify);
+  const [token, setToken] = useState<string>("");
+
+  useEffect(() => {
+    async function fetchToken() {
+      try {
+        const tokenValue = await shopify.idToken();
+        setToken(tokenValue);
+      } catch (error) {
+        console.error("获取token失败:", error);
+      }
+    }
+
+    fetchToken();
+  }, [shopify]);
+
+  useEffect(() => {
+    console.log("token", token);
+  }, [token]);
+
+  return (
+    <div>
+      <div>首页</div>
+    </div>
+  );
 
   const { products, shop } = useLoaderData<{
     products: Product[];
@@ -463,7 +487,6 @@ export default function Index() {
 
   const fetcher: any = useFetcher<typeof action>();
   const submit = useSubmit();
-  const shopify = useAppBridge();
 
   const isLoading =
     ["loading", "submitting"].includes(fetcher.state) &&
