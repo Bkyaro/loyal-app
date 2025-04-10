@@ -1,8 +1,10 @@
 import { Link } from "@shopify/polaris";
 
 interface PointsConfigListItemProps {
+  mode: "earn" | "redeem";
   id: number;
-  icon: string;
+  isCustomIcon: boolean;
+  customIcon?: string;
   iconSvg?: string;
   title: string;
   points: number;
@@ -12,9 +14,11 @@ interface PointsConfigListItemProps {
 }
 
 export function PointsConfigListItem({
+  mode,
   id,
-  icon,
-  iconSvg,
+  isCustomIcon,
+  customIcon = "",
+  iconSvg = "",
   title,
   active = false,
   description,
@@ -24,11 +28,11 @@ export function PointsConfigListItem({
       {active && (
         <div className='w-full px-4 flex items-center'>
           <div className='shrink-0 flex w-[40px] h-[40px] rounded-sm items-center justify-center bg-[#EBEEFA] border border-[#E0E0E0] mr-4'>
-            {iconSvg ? (
-              <img src={iconSvg} alt={title} className='w-[24px] h-[24px]' />
-            ) : (
-              icon
-            )}
+            <img
+              src={isCustomIcon ? customIcon : iconSvg}
+              alt={title}
+              className='w-[24px] h-[24px]'
+            />
           </div>
           <div className='flex  items-center justify-between w-full'>
             <div className='h-full '>
@@ -38,7 +42,14 @@ export function PointsConfigListItem({
                 {description && `${description}`}
               </div>
             </div>
-            <Link url={`/app/program/points/actions/${id}`} removeUnderline>
+            <Link
+              url={
+                mode === "earn"
+                  ? `/app/program/points/actions/${id}`
+                  : `/app/program/points/rewards/${id}`
+              }
+              removeUnderline
+            >
               Edit
             </Link>
           </div>

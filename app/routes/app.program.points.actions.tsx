@@ -113,7 +113,11 @@ export default function ProgramActions() {
               No actions found
             </Text>
             <div className='mt-4'>
-              <Link url='#' onClick={() => setShowAddModal(true)} removeUnderline>
+              <Link
+                url='#'
+                onClick={() => setShowAddModal(true)}
+                removeUnderline
+              >
                 Add an action
               </Link>{" "}
               so your customers can start earning points.
@@ -128,7 +132,8 @@ export default function ProgramActions() {
                 <WayToEarnItem
                   active={action.active}
                   id={action.id}
-                  icon={action.icon}
+                  isCustomIcon={action.isCustomIcon}
+                  customIcon={action.customIcon}
                   iconSvg={action.iconSvg}
                   title={action.title}
                   points={action.points}
@@ -144,9 +149,9 @@ export default function ProgramActions() {
 
       {/* 使用新的共享模态组件 */}
       <AddWaysToEarnModal
+        mode={"earn"}
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
-        onSelect={handleSelectWay}
         usePathParams={usePathParams}
       />
     </Page>

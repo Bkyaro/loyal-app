@@ -11,7 +11,8 @@ import { useNavigate } from "@remix-run/react";
 
 interface WayToEarnItemProps {
   id: number;
-  icon: string;
+  isCustomIcon: boolean;
+  customIcon?: string;
   iconSvg?: string;
   title: string;
   points: number;
@@ -24,7 +25,8 @@ interface WayToEarnItemProps {
 
 export function WayToEarnItem({
   id,
-  icon,
+  isCustomIcon,
+  customIcon,
   iconSvg,
   title,
   points,
@@ -48,11 +50,11 @@ export function WayToEarnItem({
         onClick={handleEdit}
       >
         <div className='shrink-0 flex w-[40px] h-[40px] rounded-sm items-center justify-center bg-[#fff] border border-[#E0E0E0] mr-4'>
-          {iconSvg ? (
-            <img src={iconSvg} alt={title} className='w-[24px] h-[24px]' />
-          ) : (
-            icon
-          )}
+          <img
+            src={isCustomIcon ? customIcon : iconSvg}
+            alt={title}
+            className='w-[24px] h-[24px]'
+          />
         </div>
         <div className='flex justify-between items-center flex-1'>
           <p className='font-semibold text-base basis-[30%]'>{title}</p>

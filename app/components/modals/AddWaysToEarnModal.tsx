@@ -8,13 +8,21 @@ import {
   Spinner,
   Badge,
 } from "@shopify/polaris";
-import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
+import {
+  WayToEarn,
+  WayToRedeem,
+  mockWaysToEarnData,
+  mockWaysToRedeemData,
+} from "~/mock/programData";
 import { useNavigate } from "@remix-run/react";
 
 // 全局缓存，用于存储已加载的数据
-let cachedWaysData: Record<string, WayToEarn[]> | null = null;
-let isLoadingData = false;
-let dataLoadPromise: Promise<Record<string, WayToEarn[]>> | null = null;
+let cachedEarnData: Record<string, WayToEarn[]> | null = null;
+let cachedRedeemData: Record<string, WayToRedeem[]> | null = null;
+let isLoadingEarnData = false;
+let isLoadingRedeemData = false;
+let earnDataLoadPromise: Promise<Record<string, WayToEarn[]>> | null = null;
+let redeemDataLoadPromise: Promise<Record<string, WayToRedeem[]>> | null = null;
 
 // 映射action ID到路由参数
 const actionTypeMap: Record<number, { query: string; path: string }> = {
@@ -24,75 +32,134 @@ const actionTypeMap: Record<number, { query: string; path: string }> = {
   // 可以根据需要添加更多的映射
 };
 
+// 映射redeem ID到路由参数 (如果需要)
+const redeemTypeMap: Record<number, { query: string; path: string }> = {
+  1: { query: "1", path: "amount-discount" }, // Amount discount
+  2: { query: "2", path: "percentage-off" }, // Percentage off
+  3: { query: "3", path: "free-shipping" }, // Free shipping
+};
+
 interface AddWaysToEarnModalProps {
+  mode: "earn" | "redeem";
   open: boolean;
   onClose: () => void;
-  onSelect?: (way: WayToEarn) => void;
   usePathParams?: boolean; // 是否使用路径参数而不是查询参数
 }
 
 export function AddWaysToEarnModal({
+  mode,
   open,
   onClose,
-  onSelect,
   usePathParams = false, // 默认使用查询参数方式
 }: AddWaysToEarnModalProps) {
-  const [groupedWays, setGroupedWays] = useState<Record<
+  const [groupedEarnWays, setGroupedEarnWays] = useState<Record<
     string,
     WayToEarn[]
-  > | null>(cachedWaysData);
-  const [isLoading, setIsLoading] = useState(!cachedWaysData && isLoadingData);
+  > | null>(cachedEarnData);
+
+  const [groupedRedeemWays, setGroupedRedeemWays] = useState<Record<
+    string,
+    WayToRedeem[]
+  > | null>(cachedRedeemData);
+
+  const [isLoading, setIsLoading] = useState(
+    (mode === "earn" && !cachedEarnData && isLoadingEarnData) ||
+      (mode === "redeem" && !cachedRedeemData && isLoadingRedeemData),
+  );
+
   const navigate = useNavigate();
+
+  // 动态设置标题
+  const modalTitle = mode === "earn" ? "Ways to earn" : "Ways to redeem";
 
   // 加载数据的函数，支持数据缓存
   const loadData = useCallback(async () => {
-    // 如果已有缓存数据，直接使用
-    if (cachedWaysData) {
-      setGroupedWays(cachedWaysData);
-      return;
-    }
+    if (mode === "earn") {
+      // 处理积分获取方式数据
+      if (cachedEarnData) {
+        setGroupedEarnWays(cachedEarnData);
+        return;
+      }
 
-    // 如果已经有请求正在进行中，等待该请求完成
-    if (isLoadingData && dataLoadPromise) {
-      const result = await dataLoadPromise;
-      setGroupedWays(result);
+      if (isLoadingEarnData && earnDataLoadPromise) {
+        const result = await earnDataLoadPromise;
+        setGroupedEarnWays(result);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      isLoadingEarnData = true;
+
+      earnDataLoadPromise = new Promise<Record<string, WayToEarn[]>>(
+        (resolve) => {
+          setTimeout(() => {
+            const grouped = mockWaysToEarnData.reduce(
+              (groups, way) => {
+                const category = way.category || "OTHER";
+                if (!groups[category]) {
+                  groups[category] = [];
+                }
+                groups[category].push(way);
+                return groups;
+              },
+              {} as Record<string, WayToEarn[]>,
+            );
+
+            cachedEarnData = grouped;
+            isLoadingEarnData = false;
+            resolve(grouped);
+          }, 800);
+        },
+      );
+
+      const result = await earnDataLoadPromise;
+      setGroupedEarnWays(result);
       setIsLoading(false);
-      return;
+    } else {
+      // 处理积分兑换方式数据
+      if (cachedRedeemData) {
+        setGroupedRedeemWays(cachedRedeemData);
+        return;
+      }
+
+      if (isLoadingRedeemData && redeemDataLoadPromise) {
+        const result = await redeemDataLoadPromise;
+        setGroupedRedeemWays(result);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      isLoadingRedeemData = true;
+
+      redeemDataLoadPromise = new Promise<Record<string, WayToRedeem[]>>(
+        (resolve) => {
+          setTimeout(() => {
+            const grouped = mockWaysToRedeemData.reduce(
+              (groups, way) => {
+                const category = way.category || "OTHER";
+                if (!groups[category]) {
+                  groups[category] = [];
+                }
+                groups[category].push(way);
+                return groups;
+              },
+              {} as Record<string, WayToRedeem[]>,
+            );
+
+            cachedRedeemData = grouped;
+            isLoadingRedeemData = false;
+            resolve(grouped);
+          }, 800);
+        },
+      );
+
+      const result = await redeemDataLoadPromise;
+      setGroupedRedeemWays(result);
+      setIsLoading(false);
     }
-
-    // 开始新的请求
-    setIsLoading(true);
-    isLoadingData = true;
-
-    // 创建一个请求Promise
-    dataLoadPromise = new Promise<Record<string, WayToEarn[]>>((resolve) => {
-      // 模拟API请求延迟
-      setTimeout(() => {
-        // 按分类分组的数据
-        const grouped = mockWaysToEarnData.reduce(
-          (groups, way) => {
-            const category = way.category || "OTHER";
-            if (!groups[category]) {
-              groups[category] = [];
-            }
-            groups[category].push(way);
-            return groups;
-          },
-          {} as Record<string, WayToEarn[]>,
-        );
-
-        // 更新缓存
-        cachedWaysData = grouped;
-        isLoadingData = false;
-        resolve(grouped);
-      }, 800); // 800ms延迟模拟网络请求
-    });
-
-    // 等待请求完成并更新状态
-    const result = await dataLoadPromise;
-    setGroupedWays(result);
-    setIsLoading(false);
-  }, []);
+  }, [mode]);
 
   // 当弹窗打开时，检查并加载数据
   useEffect(() => {
@@ -102,39 +169,53 @@ export function AddWaysToEarnModal({
   }, [open, loadData]);
 
   // 检查action是否有对应的表单页面
-  const hasForm = (wayId: number) => {
-    return wayId in actionTypeMap;
+  const hasForm = (wayId: number, itemMode: "earn" | "redeem") => {
+    return itemMode === "earn"
+      ? wayId in actionTypeMap
+      : wayId in redeemTypeMap;
   };
 
   // 选择项目处理函数
   const handleSelectWay = useCallback(
-    (way: WayToEarn) => {
+    (way: WayToEarn | WayToRedeem) => {
       // 关闭模态框
       onClose();
 
-      // 检查是否有对应的路由映射
-      const actionInfo = actionTypeMap[way.id];
-      if (actionInfo) {
-        // 根据不同的路由模式导航到对应页面
-        if (usePathParams) {
-          navigate(`/app/program/points/actions/new/${actionInfo.path}`);
-        } else {
-          navigate(
-            `/app/program/points/actions/new?create=${actionInfo.query}`,
-          );
+      if (mode === "earn") {
+        const earnWay = way as WayToEarn;
+        // 检查是否有对应的路由映射
+        const actionInfo = actionTypeMap[earnWay.id];
+        if (actionInfo) {
+          // 根据不同的路由模式导航到对应页面
+          if (usePathParams) {
+            navigate(`/app/program/points/actions/new/${actionInfo.path}`);
+          } else {
+            navigate(
+              `/app/program/points/actions/new?create=${actionInfo.query}`,
+            );
+          }
         }
       } else {
-        // 对于暂未实现的积分规则，使用原有的回调
-        if (onSelect) {
-          onSelect(way);
+        const redeemWay = way as WayToRedeem;
+        // 处理兑换方式选择
+        const redeemInfo = redeemTypeMap[redeemWay.id];
+        if (redeemInfo) {
+          // 根据不同的路由模式导航到对应页面
+          if (usePathParams) {
+            navigate(`/app/program/points/rewards/new/${redeemInfo.path}`);
+          } else {
+            navigate(
+              `/app/program/points/rewards/new?create=${redeemInfo.query}`,
+            );
+          }
         }
       }
     },
-    [onSelect, onClose, navigate, usePathParams],
+    [onClose, navigate, usePathParams, mode],
   );
 
   return (
-    <Modal open={open} onClose={onClose} title='Ways to earn' size='large'>
+    <Modal open={open} onClose={onClose} title={modalTitle} size='large'>
       <div>
         {isLoading ? (
           <div className='flex justify-center items-center p-8'>
@@ -142,36 +223,84 @@ export function AddWaysToEarnModal({
           </div>
         ) : (
           <BlockStack gap='400'>
-            {groupedWays &&
-              Object.entries(groupedWays).map(([category, ways]) => (
+            {mode === "earn" &&
+              groupedEarnWays &&
+              Object.entries(groupedEarnWays).map(([category, ways]) => (
                 <div key={category}>
                   <div className='text-xs font-bold p-5 pb-2'>{category}</div>
                   {ways.map((way) => (
                     <div
                       key={way.id}
                       className={`py-2 cursor-pointer hover:bg-[#F4F6F8] border-b border-[#E0E0E0] last:border-b-0 ${
-                        hasForm(way.id) ? "relative" : ""
+                        hasForm(way.id, "earn") ? "relative" : ""
                       }`}
                       onClick={() => handleSelectWay(way)}
                       title={
-                        hasForm(way.id) ? "Click to configure this action" : ""
+                        hasForm(way.id, "earn")
+                          ? "Click to configure this action"
+                          : ""
                       }
                     >
                       <InlineStack blockAlign='center'>
                         <div className='w-[40px] h-[40px] ml-5 py-2 flex items-center justify-center bg-[#fff] rounded-sm border border-[#E0E0E0]'>
-                          {way.iconSvg ? (
-                            <img
-                              src={way.iconSvg}
-                              alt={way.title}
-                              className='w-[24px] h-[24px]'
-                            />
-                          ) : (
-                            way.icon
-                          )}
+                          <img
+                            src={
+                              way.isCustomIcon ? way.customIcon : way.iconSvg
+                            }
+                            alt={way.title}
+                            className='w-[24px] h-[24px]'
+                          />
                         </div>
                         <div className='ml-4 h-full flex items-center'>
                           <span>{way.title}</span>
                         </div>
+                        <div className='ml-auto mr-5'>
+                          <span className='text-sm text-[#637381]'>
+                            {way.points} points
+                          </span>
+                        </div>
+                      </InlineStack>
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+            {mode === "redeem" &&
+              groupedRedeemWays &&
+              Object.entries(groupedRedeemWays).map(([category, ways]) => (
+                <div key={category}>
+                  <div className='text-xs font-bold p-5 pb-2'>{category}</div>
+                  {ways.map((way) => (
+                    <div
+                      key={way.id}
+                      className={`py-2 cursor-pointer hover:bg-[#F4F6F8] border-b border-[#E0E0E0] last:border-b-0 ${
+                        hasForm(way.id, "redeem") ? "relative" : ""
+                      }`}
+                      onClick={() => handleSelectWay(way)}
+                      title={
+                        hasForm(way.id, "redeem")
+                          ? "Click to configure this reward"
+                          : ""
+                      }
+                    >
+                      <InlineStack blockAlign='center'>
+                        <div className='w-[40px] h-[40px] ml-5 py-2 flex items-center justify-center bg-[#fff] rounded-sm border border-[#E0E0E0]'>
+                          <img
+                            src={
+                              way.isCustomIcon ? way.customIcon : way.iconSvg
+                            }
+                            alt={way.title}
+                            className='w-[24px] h-[24px]'
+                          />
+                        </div>
+                        <div className='ml-4 h-full flex items-center'>
+                          <span>{way.title}</span>
+                        </div>
+                        {/* <div className='ml-auto mr-5'>
+                          <span className='text-sm text-[#637381]'>
+                            {way.points_cost} points
+                          </span>
+                        </div> */}
                       </InlineStack>
                     </div>
                   ))}
