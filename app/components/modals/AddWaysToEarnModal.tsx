@@ -72,12 +72,25 @@ export function AddWaysToEarnModal({
   // 动态设置标题
   const modalTitle = mode === "earn" ? "Ways to earn" : "Ways to redeem";
 
+  // 重置加载状态和数据
+  useEffect(() => {
+    // 当模式切换时重置状态，确保正确加载
+    if (open) {
+      if (mode === "earn" && !cachedEarnData) {
+        setIsLoading(true);
+      } else if (mode === "redeem" && !cachedRedeemData) {
+        setIsLoading(true);
+      }
+    }
+  }, [mode, open]);
+
   // 加载数据的函数，支持数据缓存
   const loadData = useCallback(async () => {
     if (mode === "earn") {
       // 处理积分获取方式数据
       if (cachedEarnData) {
         setGroupedEarnWays(cachedEarnData);
+        setIsLoading(false);
         return;
       }
 
@@ -120,6 +133,7 @@ export function AddWaysToEarnModal({
       // 处理积分兑换方式数据
       if (cachedRedeemData) {
         setGroupedRedeemWays(cachedRedeemData);
+        setIsLoading(false);
         return;
       }
 
@@ -161,12 +175,13 @@ export function AddWaysToEarnModal({
     }
   }, [mode]);
 
-  // 当弹窗打开时，检查并加载数据
+  // 当弹窗打开时或模式变化时，检查并加载数据
   useEffect(() => {
     if (open) {
+      // 确保我们总是加载正确类型的数据
       loadData();
     }
-  }, [open, loadData]);
+  }, [open, loadData, mode]);
 
   // 检查action是否有对应的表单页面
   const hasForm = (wayId: number, itemMode: "earn" | "redeem") => {
@@ -296,11 +311,6 @@ export function AddWaysToEarnModal({
                         <div className='ml-4 h-full flex items-center'>
                           <span>{way.title}</span>
                         </div>
-                        {/* <div className='ml-auto mr-5'>
-                          <span className='text-sm text-[#637381]'>
-                            {way.points_cost} points
-                          </span>
-                        </div> */}
                       </InlineStack>
                     </div>
                   ))}

@@ -40,8 +40,6 @@ export default function AppProgram() {
     return location.pathname !== "/app/program/points";
   }, [location.pathname]);
 
-  const [modalType, setModalType] = useState<"earn" | "redeem">("earn");
-
   const viewEarns = () => {
     navigate("/app/program/points/actions");
   };
@@ -55,7 +53,15 @@ export default function AppProgram() {
     const [loading, setLoading] = useState(true);
     const [waysToEarn, setWaysToEarn] = useState<WayToEarn[]>([]);
     const [waysToRedeem, setWaysToRedeem] = useState<WayToRedeem[]>([]);
-    const [showAddModal, setShowAddModal] = useState(false);
+
+    // 将模态框状态合并为一个对象
+    const [modalState, setModalState] = useState<{
+      open: boolean;
+      mode: "earn" | "redeem";
+    }>({
+      open: false,
+      mode: "earn",
+    });
 
     // 模拟数据加载
     useEffect(() => {
@@ -74,19 +80,28 @@ export default function AppProgram() {
       fetchData();
     }, []);
 
+    // 使用一个函数同时设置模式和打开状态
     const showEarnsModal = () => {
-      setModalType("earn");
-      setShowAddModal(true);
+      // 使用函数式更新确保状态更新基于最新状态
+      setModalState({
+        open: true,
+        mode: "earn",
+      });
     };
 
     const showRedeemsModal = () => {
-      setModalType("redeem");
-      setShowAddModal(true);
+      setModalState({
+        open: true,
+        mode: "redeem",
+      });
     };
 
-    // 处理选择积分规则
-    const handleSelectWay = (way: WayToEarn) => {
-      console.log("Selected way to earn:", way);
+    // 关闭模态框
+    const handleCloseModal = () => {
+      setModalState((prev) => ({
+        ...prev,
+        open: false,
+      }));
     };
 
     if (loading) {
@@ -205,7 +220,7 @@ export default function AppProgram() {
                 </Text>
                 <Text variant='bodyMd' as='p'>
                   Create rewards your customers can redeem with the points
-                  they’ve earned.{" "}
+                  they've earned.{" "}
                   <Link
                     url='#'
                     onClick={() => {
@@ -287,9 +302,9 @@ export default function AppProgram() {
 
         {/* 使用新的共享模态组件 */}
         <AddWaysToEarnModal
-          mode={modalType}
-          open={showAddModal}
-          onClose={() => setShowAddModal(false)}
+          mode={modalState.mode}
+          open={modalState.open}
+          onClose={handleCloseModal}
         />
       </BlockStack>
     );
