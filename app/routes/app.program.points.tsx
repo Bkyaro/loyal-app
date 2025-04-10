@@ -15,7 +15,7 @@ import {
 import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
 import { useNavigate, useLocation, Outlet } from "@remix-run/react";
 import { ProgramNavigation } from "~/components/sections/ProgramNavigation";
-import { AddWaysToEarnModal } from "~/components/modals/AddWaysToEarnModal";
+import { AddPointsRuleModal } from "~/components/modals/AddPointsRuleModal";
 import {
   actionPointRule,
   redeemPointRuleCost,
@@ -301,7 +301,7 @@ export default function AppProgram() {
         </Layout>
 
         {/* 使用新的共享模态组件 */}
-        <AddWaysToEarnModal
+        <AddPointsRuleModal
           mode={modalState.mode}
           open={modalState.open}
           onClose={handleCloseModal}

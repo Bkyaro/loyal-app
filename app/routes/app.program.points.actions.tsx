@@ -14,7 +14,7 @@ import { useNavigate, useSearchParams, Outlet } from "@remix-run/react";
 import { WayToEarnItem } from "~/components/sections/WayToEarnItem";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import programData from "~/mock/programData";
-import { AddWaysToEarnModal } from "~/components/modals/AddWaysToEarnModal";
+import { AddPointsRuleModal } from "~/components/modals/AddPointsRuleModal";
 import { actionPointRule } from "~/components/tools";
 
 const { emptySearchSvg } = programData;
@@ -148,7 +148,7 @@ export default function ProgramActions() {
       )}
 
       {/* 使用新的共享模态组件 */}
-      <AddWaysToEarnModal
+      <AddPointsRuleModal
         mode={"earn"}
         open={showAddModal}
         onClose={() => setShowAddModal(false)}

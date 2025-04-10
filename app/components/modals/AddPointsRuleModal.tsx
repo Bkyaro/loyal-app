@@ -39,19 +39,19 @@ const redeemTypeMap: Record<number, { query: string; path: string }> = {
   3: { query: "3", path: "free-shipping" }, // Free shipping
 };
 
-interface AddWaysToEarnModalProps {
+interface AddPointsRuleModalProps {
   mode: "earn" | "redeem";
   open: boolean;
   onClose: () => void;
   usePathParams?: boolean; // 是否使用路径参数而不是查询参数
 }
 
-export function AddWaysToEarnModal({
+export function AddPointsRuleModal({
   mode,
   open,
   onClose,
   usePathParams = false, // 默认使用查询参数方式
-}: AddWaysToEarnModalProps) {
+}: AddPointsRuleModalProps) {
   const [groupedEarnWays, setGroupedEarnWays] = useState<Record<
     string,
     WayToEarn[]
