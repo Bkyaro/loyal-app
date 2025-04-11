@@ -5,12 +5,6 @@ import { BirthdayAction } from "~/components/actions/BirthdayAction";
 import { PlaceOrderAction } from "~/components/actions/PlaceOrderAction";
 import { WayToEarn, mockWaysToEarnData } from "~/mock/programData";
 import { Loading } from "@shopify/polaris";
-// Action type mapping based on action title
-const actionTypeMap: Record<string, string> = {
-  Signup: "signup",
-  "Celebrate a birthday": "birthday",
-  "Place an order": "order",
-};
 
 export default function EditAction() {
   const { id } = useParams();

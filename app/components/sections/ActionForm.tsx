@@ -17,7 +17,7 @@ import {
 import { useNavigate } from "@remix-run/react";
 import { WaysToEarnSummaryCard } from "./WaysToEarnSummaryCard";
 import { WaysToEarnIconCard } from "./WaysToEarnIconCard";
-import { WayToEarn } from "~/mock/programData";
+import { WayToEarn, WayToRedeem } from "~/mock/programData";
 import { ConfirmationDialog } from "~/components/modals/ConfirmationDialog";
 
 export interface ActionFormProps {
@@ -32,7 +32,7 @@ export interface ActionFormProps {
   onDelete?: () => void;
   isEditing?: boolean;
   defaultIcon?: string;
-  initialData?: WayToEarn;
+  initialData?: WayToEarn | WayToRedeem;
   formData?: Record<string, any>; // 当前表单数据，用于比较
   initialFormData?: Record<string, any>; // 初始表单数据，用于比较
 }
