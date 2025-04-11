@@ -152,7 +152,7 @@ export function ActionForm({
 
   return (
     <>
-      <div className='w-full max-w-[1200px] mx-auto'>
+      <div className='w-full max-w-[1200px] mx-auto mb-6'>
         <Page
           backAction={{
             content: backAction.content,
@@ -166,11 +166,13 @@ export function ActionForm({
           }}
           fullWidth
         >
-          <div className='w-full flex gap-5'>
-            {/* 左侧编辑区 */}
-            <div className='w-2/3'>{children}</div>
-            {/* 右侧summary - Icon卡片区 */}
-            <div className='w-1/3'>
+          {/* 添加响应式布局，PC端左右布局，移动端上下布局 */}
+          <div className='w-full flex flex-col md:flex-row gap-5 max-w-[1200px] mx-auto'>
+            {/* 左侧编辑区 - PC端2/3宽度，移动端全宽 */}
+            <div className='w-full md:w-2/3'>{children}</div>
+
+            {/* 右侧summary - PC端1/3宽度，移动端全宽 */}
+            <div className='w-full md:w-1/3'>
               {/* Summary板块 */}
               <WaysToEarnSummaryCard
                 isActive={isActive}
@@ -203,6 +205,7 @@ export function ActionForm({
             </div> */}
             </div>
           </div>
+
           {/* 如果是编辑页面，则显示删除按钮 */}
           {isEditing && onDelete && (
             <div className='mt-4 flex gap-3 justify-end'>

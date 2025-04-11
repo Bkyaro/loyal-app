@@ -259,26 +259,24 @@ export function FreeShippingRedeem({
               Reward value
             </Text>
 
-            <div>
-              <InlineStack gap='200' align='start' blockAlign='center'>
-                <div>
-                  <Text as='span'>Points cost</Text>
-                </div>
-                <div className='w-full'>
-                  <TextField
-                    label=''
-                    type='integer'
-                    value={formState.pointsValue}
-                    onChange={(value) => updateFormState("pointsValue", value)}
-                    autoComplete='off'
-                    min={1}
-                    suffix='points'
-                    labelHidden
-                    error={formErrors.pointsValue}
-                    clearButton
-                  />
-                </div>
-              </InlineStack>
+            {/* 使用外层div实现响应式布局 */}
+            <div className='flex flex-col items-start gap-2'>
+              <div className='w-full sm:w-auto mb-2 sm:mb-0'>
+                <Text as='span'>Points cost</Text>
+              </div>
+              <div className='w-full'>
+                <TextField
+                  label=''
+                  type='integer'
+                  value={formState.pointsValue}
+                  onChange={(value) => updateFormState("pointsValue", value)}
+                  autoComplete='off'
+                  min={1}
+                  suffix='points'
+                  labelHidden
+                  error={formErrors.pointsValue}
+                />
+              </div>
             </div>
 
             <div>
@@ -306,7 +304,6 @@ export function FreeShippingRedeem({
                     autoComplete='off'
                     labelHidden
                     error={formErrors.maxShippingAmount}
-                    clearButton
                   />
                 </div>
               )}
@@ -347,7 +344,6 @@ export function FreeShippingRedeem({
                     helpText='Avoid using spaces and special characters in the prefix to prevent errors when customers copy and paste the entire discount code.'
                     labelHidden
                     error={formErrors.discountPrefix}
-                    clearButton
                   />
                 </div>
               )}

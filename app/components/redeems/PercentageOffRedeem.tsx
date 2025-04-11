@@ -303,10 +303,12 @@ export function PercentageOffRedeem({
               Reward value
             </Text>
 
-            <div className='flex gap-2 items-center justify-between'>
-              <div className='flex-1'>
-                <InlineStack gap='200' align='start' blockAlign='center'>
-                  <div>
+            {/* 更改为响应式布局 */}
+            <div className='flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between'>
+              <div className='w-full lg:flex-1'>
+                {/* 使用外层div实现响应式布局 */}
+                <div className='flex flex-col  items-start gap-2'>
+                  <div className='w-full sm:w-auto mb-2 sm:mb-0'>
                     <Text as='span'>Points cost</Text>
                   </div>
                   <div className='w-full'>
@@ -322,15 +324,15 @@ export function PercentageOffRedeem({
                       suffix='points'
                       labelHidden
                       error={formErrors.pointsValue}
-                      clearButton
                     />
                   </div>
-                </InlineStack>
+                </div>
               </div>
 
-              <div className='flex-1'>
-                <InlineStack gap='200' align='start' blockAlign='center'>
-                  <div>
+              <div className='w-full lg:flex-1'>
+                {/* 使用外层div实现响应式布局 */}
+                <div className='flex flex-col  items-start gap-2'>
+                  <div className='w-full sm:w-auto mb-2 sm:mb-0'>
                     <Text as='span'>Discount value</Text>
                   </div>
                   <div className='w-full'>
@@ -347,10 +349,9 @@ export function PercentageOffRedeem({
                       suffix='% off'
                       labelHidden
                       error={formErrors.discountValue}
-                      clearButton
                     />
                   </div>
-                </InlineStack>
+                </div>
               </div>
             </div>
           </BlockStack>
@@ -448,7 +449,6 @@ export function PercentageOffRedeem({
                     autoComplete='off'
                     labelHidden
                     error={formErrors.minPurchaseAmount}
-                    clearButton
                   />
                   <div className='mt-1 text-xs text-gray-500'>
                     Applies only to selected collections.
@@ -492,7 +492,6 @@ export function PercentageOffRedeem({
                     helpText='Avoid using spaces and special characters in the prefix to prevent errors when customers copy and paste the entire discount code.'
                     labelHidden
                     error={formErrors.discountPrefix}
-                    clearButton
                   />
                 </div>
               )}

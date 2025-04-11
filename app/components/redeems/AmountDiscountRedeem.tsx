@@ -52,6 +52,7 @@ interface FormState {
 
   // 折扣代码
   useDiscountPrefix: boolean;
+  discountPrefix: string;
 
   // 组合设置
   combinableWith: {
@@ -114,6 +115,7 @@ export function AmountDiscountRedeem({
 
     // 折扣代码
     useDiscountPrefix: false,
+    discountPrefix: "",
 
     // 组合设置
     combinableWith: {
@@ -177,6 +179,11 @@ export function AmountDiscountRedeem({
       (!formState.maximumPoints || parseInt(formState.maximumPoints) < 0)
     ) {
       errors.maximumPoints = "Maximum points cannot be negative";
+    }
+
+    // 如果启用了折扣代码前缀，验证其值
+    if (formState.useDiscountPrefix && !formState.discountPrefix) {
+      errors.discountPrefix = "Discount prefix is required";
     }
 
     setFormErrors(errors);
@@ -299,7 +306,7 @@ export function AmountDiscountRedeem({
 
     // 折扣券前缀
     if (formState.useDiscountPrefix) {
-      summaryItems[3] = `Discount codes will have prefix "${formState.useDiscountPrefix}"`;
+      summaryItems[3] = `Discount codes will have prefix "${formState.discountPrefix}"`;
     }
 
     // 过滤掉空字符串项并返回
@@ -366,10 +373,10 @@ export function AmountDiscountRedeem({
                 {/* 根据redemptionStyle显示不同的输入界面 */}
                 {formState.redemptionStyle === "fixed" ? (
                   // Fixed amount of points 模式的输入界面
-                  <div className='flex gap-2 items-center justify-between'>
-                    <div className='flex-1'>
-                      <InlineStack gap='200' align='start' blockAlign='center'>
-                        <div>
+                  <div className='flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between'>
+                    <div className='w-full lg:flex-1'>
+                      <div className='flex flex-col items-start gap-2'>
+                        <div className='w-full sm:w-auto mb-2 sm:mb-0'>
                           <Text as='span'>Points cost</Text>
                         </div>
                         <div className='w-full'>
@@ -389,22 +396,21 @@ export function AmountDiscountRedeem({
                             }
                             labelHidden
                             error={formErrors.pointsValue}
-                            clearButton
                           />
                         </div>
-                      </InlineStack>
+                      </div>
                     </div>
 
-                    <div className='flex-1'>
-                      <InlineStack gap='200' align='start' blockAlign='center'>
-                        <div>
+                    <div className='w-full lg:flex-1'>
+                      <div className='flex flex-col items-start gap-2'>
+                        <div className='w-full sm:w-auto mb-2 sm:mb-0'>
                           <Text as='span'>Discount value</Text>
                         </div>
                         <div className='w-full'>
                           <TextField
                             label=''
+                            type='number'
                             prefix='$'
-                            type='integer'
                             value={formState.discountValue}
                             onChange={(value) =>
                               updateFormState("discountValue", value)
@@ -413,140 +419,70 @@ export function AmountDiscountRedeem({
                             min={1}
                             labelHidden
                             error={formErrors.discountValue}
-                            clearButton
                           />
                         </div>
-                      </InlineStack>
+                      </div>
                     </div>
                   </div>
                 ) : (
                   // Increments of points 模式的输入界面
-
-                  <>
-                    <div className='flex gap-2 items-center justify-between'>
-                      <div className='flex-1'>
-                        <InlineStack
-                          gap='200'
-                          align='start'
-                          blockAlign='center'
-                        >
-                          <div>
-                            <Text as='span'>Customer redeems increment of</Text>
+                  <div>
+                    {/* 使用响应式布局 */}
+                    <div className='flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between'>
+                      <div className='w-full lg:flex-1'>
+                        <div className='flex flex-col items-start gap-2'>
+                          <div className='w-full sm:w-auto mb-2 sm:mb-0'>
+                            <Text as='span'>Points redeemed</Text>
                           </div>
                           <div className='w-full'>
                             <TextField
                               label=''
                               type='integer'
-                              min={1}
                               value={formState.pointsValue}
                               onChange={(value) =>
                                 updateFormState("pointsValue", value)
                               }
                               autoComplete='off'
-                              suffix={
-                                Number(formState.pointsValue) > 1
-                                  ? "points"
-                                  : "point"
-                              }
+                              min={1}
+                              suffix='points'
                               labelHidden
                               error={formErrors.pointsValue}
-                              clearButton
                             />
                           </div>
-                        </InlineStack>
+                        </div>
                       </div>
 
-                      <div className='flex-1'>
-                        <InlineStack
-                          gap='200'
-                          align='start'
-                          blockAlign='center'
-                        >
-                          <div>
-                            <Text as='span'>Customer gets</Text>
+                      <div className='w-full lg:flex-1'>
+                        <div className='flex flex-col items-start gap-2'>
+                          <div className='w-full sm:w-auto mb-2 sm:mb-0'>
+                            <Text as='span'>Discount value</Text>
                           </div>
                           <div className='w-full'>
                             <TextField
                               label=''
                               prefix='$'
-                              type='integer'
-                              min={1}
+                              type='number'
                               value={formState.discountValue}
                               onChange={(value) =>
                                 updateFormState("discountValue", value)
                               }
                               autoComplete='off'
+                              min={1}
                               labelHidden
                               error={formErrors.discountValue}
-                              clearButton
                             />
                           </div>
-                        </InlineStack>
+                        </div>
                       </div>
                     </div>
 
                     <div className='mt-4'>
-                      <Checkbox
-                        label='Set a minimum amount of points required to redeem this reward'
-                        checked={formState.hasMinimumPoints}
-                        onChange={() =>
-                          updateFormState(
-                            "hasMinimumPoints",
-                            !formState.hasMinimumPoints,
-                          )
-                        }
-                      />
-
-                      {formState.hasMinimumPoints && (
-                        <div className='mt-2 ml-8'>
-                          <TextField
-                            type='number'
-                            label=''
-                            value={formState.minimumPoints}
-                            onChange={(value) =>
-                              updateFormState("minimumPoints", value)
-                            }
-                            autoComplete='off'
-                            suffix='points'
-                            labelHidden
-                            error={formErrors.minimumPoints}
-                            clearButton
-                          />
-                        </div>
-                      )}
+                      <Text as='p' variant='bodyMd'>
+                        For example, a customer spending 200 points will receive
+                        ${parseFloat(formState.discountValue) * 2} off
+                      </Text>
                     </div>
-
-                    <div className='mt-2'>
-                      <Checkbox
-                        label='Set a maximum amount of points the customer can spend on this reward'
-                        checked={formState.hasMaximumPoints}
-                        onChange={() =>
-                          updateFormState(
-                            "hasMaximumPoints",
-                            !formState.hasMaximumPoints,
-                          )
-                        }
-                      />
-
-                      {formState.hasMaximumPoints && (
-                        <div className='mt-2 ml-8'>
-                          <TextField
-                            type='number'
-                            label=''
-                            value={formState.maximumPoints}
-                            onChange={(value) =>
-                              updateFormState("maximumPoints", value)
-                            }
-                            autoComplete='off'
-                            suffix='points'
-                            labelHidden
-                            error={formErrors.maximumPoints}
-                            clearButton
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </>
+                  </div>
                 )}
               </BlockStack>
             </Card>
@@ -674,6 +610,24 @@ export function AmountDiscountRedeem({
                     )
                   }
                 />
+
+                {formState.useDiscountPrefix && (
+                  <div className='mt-2 ml-8'>
+                    <TextField
+                      label=''
+                      type='text'
+                      value={formState.discountPrefix}
+                      onChange={(value) =>
+                        updateFormState("discountPrefix", value)
+                      }
+                      autoComplete='off'
+                      placeholder='e.g. $10OFF-'
+                      helpText='Avoid using spaces and special characters in the prefix to prevent errors when customers copy and paste the entire discount code.'
+                      labelHidden
+                      error={formErrors.discountPrefix}
+                    />
+                  </div>
+                )}
 
                 <div className='mt-2 text-xs text-gray-500'>
                   An example discount code will look like this: C7ffab13

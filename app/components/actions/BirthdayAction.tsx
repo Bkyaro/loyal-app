@@ -92,11 +92,13 @@ export function BirthdayAction({
             <Text variant='headingMd' as='h2'>
               Earning value
             </Text>
-            <div>
-              <Text variant='bodyMd' as='p'>
-                Points awarded
-              </Text>
-              <div className='mt-2'>
+            <div className='flex flex-col  items-start gap-2'>
+              <div className='w-full sm:w-auto mb-2 sm:mb-0'>
+                <Text variant='bodyMd' as='p'>
+                  Points awarded
+                </Text>
+              </div>
+              <div className='w-full sm:w-1/2'>
                 <TextField
                   label='Points'
                   labelHidden
