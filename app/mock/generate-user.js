@@ -1,4 +1,4 @@
-// JSON server mock -> https://github.com/typicode/json-server
+// JSON server mock -> https://github.com/typicode/json-server -> npx json-server app/mock/db.json
 
 // mock-api/generate-users.js
 import { faker } from "@faker-js/faker";
