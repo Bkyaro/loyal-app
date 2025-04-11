@@ -152,32 +152,33 @@ export function ActionForm({
 
   return (
     <>
-      <Page
-        backAction={{
-          content: backAction.content,
-          onAction: handleBackAction,
-        }}
-        title={title}
-        primaryAction={{
-          content: isEditing ? "Save" : "Create",
-          onAction: handlePrimaryAction,
-          disabled: isEditing && !hasChanges, // 编辑页面且无变化时禁用
-        }}
-        fullWidth
-      >
-        <div className='w-full flex gap-5'>
-          {/* 左侧编辑区 */}
-          <div className='w-2/3'>{children}</div>
-          {/* 右侧summary - Icon卡片区 */}
-          <div className='w-1/3'>
-            {/* Summary板块 */}
-            <WaysToEarnSummaryCard
-              isActive={isActive}
-              summaryContent={summaryContent}
-              onStatusChange={handleStatusChange}
-            />
-            {/* 入口icon图片配置，本期不上 */}
-            {/* <div className='mt-4'>
+      <div className='w-full max-w-[1200px] mx-auto'>
+        <Page
+          backAction={{
+            content: backAction.content,
+            onAction: handleBackAction,
+          }}
+          title={title}
+          primaryAction={{
+            content: isEditing ? "Save" : "Create",
+            onAction: handlePrimaryAction,
+            disabled: isEditing && !hasChanges, // 编辑页面且无变化时禁用
+          }}
+          fullWidth
+        >
+          <div className='w-full flex gap-5'>
+            {/* 左侧编辑区 */}
+            <div className='w-2/3'>{children}</div>
+            {/* 右侧summary - Icon卡片区 */}
+            <div className='w-1/3'>
+              {/* Summary板块 */}
+              <WaysToEarnSummaryCard
+                isActive={isActive}
+                summaryContent={summaryContent}
+                onStatusChange={handleStatusChange}
+              />
+              {/* 入口icon图片配置，本期不上 */}
+              {/* <div className='mt-4'>
               <WaysToEarnIconCard
                 isCustomIcon={isCustomIcon}
                 customIcon={customIcon}
@@ -200,17 +201,26 @@ export function ActionForm({
                 }
               />
             </div> */}
+            </div>
           </div>
-        </div>
-        {/* 如果是编辑页面，则显示删除按钮 */}
-        {isEditing && onDelete && (
-          <div className='mt-4 flex justify-end'>
-            <Button tone='critical' size='large' onClick={handleDeleteClick}>
-              Delete
-            </Button>
-          </div>
-        )}
-      </Page>
+          {/* 如果是编辑页面，则显示删除按钮 */}
+          {isEditing && onDelete && (
+            <div className='mt-4 flex gap-3 justify-end'>
+              <Button tone='critical' size='large' onClick={handleDeleteClick}>
+                Delete
+              </Button>
+              <Button
+                variant='primary'
+                size='large'
+                onClick={handlePrimaryAction}
+                disabled={!hasChanges}
+              >
+                Save
+              </Button>
+            </div>
+          )}
+        </Page>
+      </div>
 
       {/* 未保存更改确认对话框 */}
       <ConfirmationDialog
