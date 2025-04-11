@@ -30,7 +30,7 @@ export default function NewRewards() {
 
     // If no action type is specified, navigate to the default
     if (!create) {
-      navigate(`/app/program/points/rewards/new?create=${ActionType.AMOUNT}`);
+      navigate(`/app/program/points/rewards`);
     }
 
     return () => clearTimeout(timer);

@@ -10,26 +10,26 @@ export default function ProgramLayout() {
       content: "Points",
       path: "/app/program/points",
     },
-    {
-      id: "referrals",
-      content: "Referrals",
-      path: "/app/program/referrals",
-    },
-    {
-      id: "vip",
-      content: "VIP",
-      path: "/app/program/vip",
-    },
-    {
-      id: "activity",
-      content: "Activity",
-      path: "/app/program/activity",
-    },
-    {
-      id: "bonus-campaigns",
-      content: "Bonus Campaigns",
-      path: "/app/program/bonus-campaigns",
-    },
+    // {
+    //   id: "referrals",
+    //   content: "Referrals",
+    //   path: "/app/program/referrals",
+    // },
+    // {
+    //   id: "vip",
+    //   content: "VIP",
+    //   path: "/app/program/vip",
+    // },
+    // {
+    //   id: "activity",
+    //   content: "Activity",
+    //   path: "/app/program/activity",
+    // },
+    // {
+    //   id: "bonus-campaigns",
+    //   content: "Bonus Campaigns",
+    //   path: "/app/program/bonus-campaigns",
+    // },
   ];
 
   return (

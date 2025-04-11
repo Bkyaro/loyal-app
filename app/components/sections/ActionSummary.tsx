@@ -22,11 +22,20 @@ interface ActionSummaryProps {
 
 // Wrapper component for consistent summary display
 export function ActionSummary({ items }: ActionSummaryProps) {
+  // 如果items为空数组或者没有有效内容的item，则不渲染任何内容
+  if (!items || items.length === 0) {
+    return null;
+  }
+
+  const validItems = items.filter((item) => item);
+
   return (
-    <ul className='list-disc pl-5'>
-      {items.map((item, index) => (
-        <SummaryItem key={index}>{item}</SummaryItem>
-      ))}
-    </ul>
+    validItems.length && (
+      <ul className='list-disc pl-5'>
+        {validItems.map((item, index) => (
+          <SummaryItem key={index}>{item}</SummaryItem>
+        ))}
+      </ul>
+    )
   );
 }
