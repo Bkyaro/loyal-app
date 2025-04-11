@@ -82,7 +82,7 @@ export function SignupAction({
     >
       <Card>
         <div className='p-4'>
-          <BlockStack gap='400'>
+          <BlockStack gap='200'>
             <Text variant='headingMd' as='h2'>
               Earning value
             </Text>
@@ -92,7 +92,7 @@ export function SignupAction({
                   Points awarded
                 </Text>
               </div>
-              <div className='w-full sm:w-1/2'>
+              <div className='w-full'>
                 <TextField
                   label='Points'
                   labelHidden
@@ -111,7 +111,7 @@ export function SignupAction({
       {/* <div className='mt-4'>
         <Card>
           <div className='p-4'>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Customer eligibility
               </Text>

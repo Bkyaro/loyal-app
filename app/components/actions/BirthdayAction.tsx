@@ -88,7 +88,7 @@ export function BirthdayAction({
     >
       <Card padding='0'>
         <div className='p-4'>
-          <BlockStack gap='400'>
+          <BlockStack gap='200'>
             <Text variant='headingMd' as='h2'>
               Earning value
             </Text>
@@ -98,7 +98,7 @@ export function BirthdayAction({
                   Points awarded
                 </Text>
               </div>
-              <div className='w-full sm:w-1/2'>
+              <div className='w-full'>
                 <TextField
                   label='Points'
                   labelHidden
@@ -118,7 +118,7 @@ export function BirthdayAction({
       {/* <div className='mt-4'>
         <Card>
           <div className='p-4'>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Customer eligibility
               </Text>
@@ -145,7 +145,7 @@ export function BirthdayAction({
       <div className='mt-4'>
         <Card>
           <div className='p-4'>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Redemption limits
               </Text>

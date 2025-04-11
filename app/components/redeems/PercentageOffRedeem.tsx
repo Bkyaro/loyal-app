@@ -298,7 +298,7 @@ export function PercentageOffRedeem({
       <div className='flex-1'>
         {/* 奖励价值 */}
         <Card>
-          <BlockStack gap='400'>
+          <BlockStack gap='200'>
             <Text variant='headingMd' as='h2'>
               Reward value
             </Text>
@@ -360,7 +360,7 @@ export function PercentageOffRedeem({
         {/* 适用范围 */}
         <div className='mt-5'>
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Applies to
               </Text>
@@ -386,7 +386,7 @@ export function PercentageOffRedeem({
               </div>
 
               {formState.appliesTo === "collection" && (
-                <div className='mt-2 ml-8'>
+                <div className='ml-8'>
                   <Select
                     label=''
                     options={[
@@ -411,7 +411,7 @@ export function PercentageOffRedeem({
         {/* 最低要求 */}
         <div className='mt-5'>
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Minimum requirement
               </Text>
@@ -437,7 +437,7 @@ export function PercentageOffRedeem({
               </div>
 
               {formState.minRequirement === "purchase" && (
-                <div className='mt-2 ml-8'>
+                <div className='ml-8'>
                   <TextField
                     label=''
                     prefix='$'
@@ -462,7 +462,7 @@ export function PercentageOffRedeem({
         {/* 折扣代码 */}
         <div className='mt-5'>
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Discount code
               </Text>
@@ -479,7 +479,7 @@ export function PercentageOffRedeem({
               />
 
               {formState.useDiscountPrefix && (
-                <div className='mt-2 ml-8'>
+                <div className='ml-8'>
                   <TextField
                     label=''
                     type='text'
@@ -506,7 +506,7 @@ export function PercentageOffRedeem({
         {/* 组合 */}
         <div className='mt-5'>
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Combinations
               </Text>

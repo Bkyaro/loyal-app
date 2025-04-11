@@ -254,7 +254,7 @@ export function FreeShippingRedeem({
       <div className='flex-1'>
         {/* 奖励价值 */}
         <Card>
-          <BlockStack gap='400'>
+          <BlockStack gap='200'>
             <Text variant='headingMd' as='h2'>
               Reward value
             </Text>
@@ -292,7 +292,7 @@ export function FreeShippingRedeem({
               />
 
               {formState.useMaxShippingAmount && (
-                <div className='mt-2 ml-8'>
+                <div className='ml-8'>
                   <TextField
                     label=''
                     prefix='$'
@@ -314,7 +314,7 @@ export function FreeShippingRedeem({
         {/* 折扣代码 */}
         <div className='mt-5'>
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Discount code
               </Text>
@@ -331,7 +331,7 @@ export function FreeShippingRedeem({
               />
 
               {formState.useDiscountPrefix && (
-                <div className='mt-2 ml-8'>
+                <div className='ml-8'>
                   <TextField
                     label=''
                     type='text'
@@ -358,7 +358,7 @@ export function FreeShippingRedeem({
         {/* 组合 */}
         <div className='mt-5'>
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Combinations
               </Text>

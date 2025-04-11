@@ -102,7 +102,7 @@ export function PlaceOrderAction({
       >
         <Card padding='0'>
           <div className='p-4'>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Earning type
               </Text>
@@ -131,7 +131,7 @@ export function PlaceOrderAction({
         <div className='mt-4'>
           <Card padding='0'>
             <div>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <div className='p-4'>
                   <Text variant='headingMd' as='h2'>
                     Earning value
@@ -145,7 +145,7 @@ export function PlaceOrderAction({
                             : "Points awarded"}
                         </Text>
                       </div>
-                      <div className='w-full sm:w-1/2'>
+                      <div className='w-full'>
                         <TextField
                           label='Points'
                           labelHidden
@@ -179,7 +179,7 @@ export function PlaceOrderAction({
         {/* <div className='mt-4'>
           <Card>
             <div className='p-4'>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <Text variant='headingMd' as='h2'>
                   Customer eligibility
                 </Text>
@@ -207,7 +207,7 @@ export function PlaceOrderAction({
         {/* <div className='mt-4'>
           <Card>
             <div className='p-4'>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <InlineStack align='space-between'>
                   <Text variant='headingMd' as='h2'>
                     Product eligibility

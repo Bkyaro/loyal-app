@@ -335,7 +335,7 @@ export function AmountDiscountRedeem({
         <div className='flex-1'>
           {/* 积分兑换风格 */}
           <Card>
-            <BlockStack gap='400'>
+            <BlockStack gap='200'>
               <Text variant='headingMd' as='h2'>
                 Points redemption style
               </Text>
@@ -365,7 +365,7 @@ export function AmountDiscountRedeem({
           {/* 奖励价值 */}
           <div className='mt-5'>
             <Card>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <Text variant='headingMd' as='h2'>
                   Reward value
                 </Text>
@@ -491,7 +491,7 @@ export function AmountDiscountRedeem({
           {/* 适用范围 */}
           <div className='mt-5'>
             <Card>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <Text variant='headingMd' as='h2'>
                   Applies to
                 </Text>
@@ -517,7 +517,7 @@ export function AmountDiscountRedeem({
                 </div>
 
                 {formState.appliesTo === "collection" && (
-                  <div className='mt-2 ml-8'>
+                  <div className='ml-8'>
                     <Select
                       label=''
                       options={[
@@ -542,7 +542,7 @@ export function AmountDiscountRedeem({
           {/* 最低要求 */}
           <div className='mt-5'>
             <Card>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <Text variant='headingMd' as='h2'>
                   Minimum requirement
                 </Text>
@@ -570,7 +570,7 @@ export function AmountDiscountRedeem({
                 </div>
 
                 {formState.minRequirement === "purchase" && (
-                  <div className='mt-2 ml-8'>
+                  <div className='ml-8'>
                     <TextField
                       label=''
                       prefix='$'
@@ -595,7 +595,7 @@ export function AmountDiscountRedeem({
           {/* 折扣代码 */}
           <div className='mt-5'>
             <Card>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <Text variant='headingMd' as='h2'>
                   Discount code
                 </Text>
@@ -612,7 +612,7 @@ export function AmountDiscountRedeem({
                 />
 
                 {formState.useDiscountPrefix && (
-                  <div className='mt-2 ml-8'>
+                  <div className='ml-8'>
                     <TextField
                       label=''
                       type='text'
@@ -639,7 +639,7 @@ export function AmountDiscountRedeem({
           {/* 组合 */}
           <div className='mt-5'>
             <Card>
-              <BlockStack gap='400'>
+              <BlockStack gap='200'>
                 <Text variant='headingMd' as='h2'>
                   Combinations
                 </Text>
