@@ -14,6 +14,7 @@ import {
 import { useNavigate } from "@remix-run/react";
 import axios from "axios";
 import emptySearch from "../assets/program/ways-to-earn/empty-search.svg";
+import { clsx } from "clsx";
 
 interface Customer {
   id: number;
@@ -49,13 +50,13 @@ export default function Customers() {
 
       const response = await axios.get(url);
 
-      // Extract pagination info from headers
-      const totalCount = parseInt(response.headers["x-total-count"] || "0", 10);
-      const totalPages = Math.ceil(totalCount / 10);
+      console.log("response.data", response.data);
 
+      // Extract pagination info from headers
+      // const totalCount = response.data.items;
+      const totalPages = response.data.pages;
       setTotalPages(totalPages);
 
-      console.log("response.data", response.data);
       // Map API response to our Customer interface
       // 搜索结果拉取
 
@@ -141,20 +142,27 @@ export default function Customers() {
         onClick={() => {}} // Required but not used
       >
         <div
-          className='flex items-center justify-between'
+          className='flex items-center justify-between py-2 px-4'
           onMouseEnter={() => setHoveredCustomerId(id)}
           onMouseLeave={() => setHoveredCustomerId(null)}
         >
-          <div className='flex items-center gap-3'>
+          {/* 头像&邮箱 - 固定宽度 */}
+          <div className='flex items-center gap-3 w-[35%] min-w-[240px]'>
             <Avatar customer name={name} />
-            <div>
-              <div className='font-medium'>{name}</div>
-              <div className='text-xs text-gray-500'>{email}</div>
+            <div className='overflow-hidden'>
+              <div className='font-medium text-ellipsis overflow-hidden'>
+                {name}
+              </div>
+              <div className='text-xs text-gray-500 text-ellipsis overflow-hidden'>
+                {email}
+              </div>
             </div>
           </div>
 
-          <div className='flex items-center gap-6'>
-            <div>
+          {/* 其他列项 */}
+          <div className='flex items-center flex-grow justify-between pr-4'>
+            {/* Status */}
+            <div className='w-[120px] text-center'>
               {isMember ? (
                 <Badge tone='success'>Member</Badge>
               ) : (
@@ -162,25 +170,32 @@ export default function Customers() {
               )}
             </div>
 
-            <div>
+            {/* Points */}
+            <div className='w-[120px] text-center'>
               <Text as='span'>{points.toLocaleString()} points</Text>
             </div>
 
-            <div>
+            {/* Referrals */}
+            {/* <div className='w-[120px] text-center'>
               <Text as='span'>{referrals} referrals</Text>
-            </div>
+            </div> */}
 
-            <div className='min-w-24'>
+            {/* VIP tier */}
+            {/* <div className='w-[120px] text-center'>
               <Text as='span'>{vipTier ? vipTier : "No VIP tier"}</Text>
-            </div>
+            </div> */}
 
-            {isHovered && (
-              <div className='ml-4'>
-                <Button onClick={() => viewInShopify(id)} variant='plain'>
-                  View in Shopify
-                </Button>
-              </div>
-            )}
+            {/* Action button */}
+            <div
+              className={clsx(
+                "w-[120px] text-right transition-opacity duration-150",
+                isHovered ? "opacity-100" : "opacity-0 pointer-events-none",
+              )}
+            >
+              <Button onClick={() => viewInShopify(id)} variant='plain'>
+                View in Shopify
+              </Button>
+            </div>
           </div>
         </div>
       </ResourceItem>
@@ -212,8 +227,8 @@ export default function Customers() {
 
   return (
     <Page title='Customers' fullWidth={true}>
-      <Card>
-        <div className='p-4'>
+      <Card padding='0'>
+        <div className='p-6'>
           <TextField
             label=''
             value={searchValue}
@@ -255,7 +270,7 @@ export default function Customers() {
               Previous
             </Button>
             <div className='mx-4'>
-              Page {page} of {totalPages}
+              {page} / {totalPages}
             </div>
             <Button
               onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
