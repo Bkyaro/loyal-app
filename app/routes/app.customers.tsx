@@ -142,25 +142,38 @@ export default function Customers() {
         onClick={() => {}} // Required but not used
       >
         <div
-          className='flex items-center justify-between py-2 px-4'
+          className='flex flex-col items-start justify-start py-2 px-4 md:flex-row md:items-center md:justify-start'
           onMouseEnter={() => setHoveredCustomerId(id)}
           onMouseLeave={() => setHoveredCustomerId(null)}
         >
           {/* 头像&邮箱 - 固定宽度 */}
-          <div className='flex items-center gap-3 w-[35%] min-w-[240px]'>
+          <div className='flex gap-3 w-[35%] min-w-[240px] items-start md:items-center '>
             <Avatar customer name={name} />
-            <div className='overflow-hidden'>
+            <div className='overflow-hidden flex flex-col gap-2 '>
               <div className='font-medium text-ellipsis overflow-hidden'>
                 {name}
               </div>
               <div className='text-xs text-gray-500 text-ellipsis overflow-hidden'>
                 {email}
               </div>
+              {/* Status */}
+              <div className='block md:hidden w-[120px] '>
+                {isMember ? (
+                  <Badge tone='success'>Member</Badge>
+                ) : (
+                  <Badge tone='info'>Guest</Badge>
+                )}
+              </div>
+
+              {/* Points */}
+              <div className='block md:hidden w-[120px] '>
+                <Text as='span'>{points.toLocaleString()} points</Text>
+              </div>
             </div>
           </div>
 
           {/* 其他列项 */}
-          <div className='flex items-center flex-grow justify-between pr-4'>
+          <div className='hidden md:flex flex-col flex-grow pr-4 md:flex-row md:items-center md:justify-between'>
             {/* Status */}
             <div className='w-[120px] text-center'>
               {isMember ? (
@@ -188,7 +201,7 @@ export default function Customers() {
             {/* Action button */}
             <div
               className={clsx(
-                "w-[120px] text-right transition-opacity duration-150",
+                "hidden md:block w-[120px] text-right transition-opacity duration-150",
                 isHovered ? "opacity-100" : "opacity-0 pointer-events-none",
               )}
             >
